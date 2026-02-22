@@ -89,7 +89,7 @@
   "retest_needed": false,
   "should_main_agent_self_test": true,
   
-  "context_for_next_testing_agent": "All P0 navigation and search features are working. The only issue is the 'Skip & View Property' button being disabled when no documents are uploaded in the Upload flow Step 2. Backend APIs for search, property profile, and auth are all functional. Sample property data is seeded automatically. Government records return mock data with correct state-specific sources (Bhoomi for Karnataka, Dharani for Telangana, etc.). AI Smart Search parses natural language queries using Gemini and falls back to regex parser.",
+  "context_for_next_testing_agent": "All P0 navigation and search features are working. Fixed 3 bugs: (1) Skip button in Upload flow, (2) government-records API now accepts survey numbers with slashes via path:path converter, (3) PropertyDetail.js now URL-encodes survey_no. Backend APIs for search, property profile, and auth are all functional. Sample property data is seeded automatically. Government records return mock data with correct state-specific sources (Bhoomi for Karnataka, Dharani for Telangana, etc.). AI Smart Search parses natural language queries using Gemini and falls back to regex parser.",
   
   "mocked_components": {
     "government_records": "MOCKED - Returns mock data with disclaimer 'MOCK DATA - Real government API integration pending'",
