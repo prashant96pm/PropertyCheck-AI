@@ -1,0 +1,161 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "PropertyCheck AI",
+      "persona": "The Digital Notary",
+      "core_values": ["Trust", "Precision", "Authority", "Clarity"],
+      "emotional_tone": "Legal Assurance meets AI Speed",
+      "archetype": "Swiss High-Contrast (Authority) + Organic Earthy (Land)"
+    },
+    "typography": {
+      "font_families": {
+        "headings": "Playfair Display, serif",
+        "body": "Inter, sans-serif",
+        "data": "JetBrains Mono, monospace"
+      },
+      "usage_rules": {
+        "headings": "Use Playfair Display for H1-H3. Track tight (-0.02em). Weight: SemiBold (600) or Black (900).",
+        "body": "Use Inter for all UI text. Relaxed line-height (1.6).",
+        "data": "Use JetBrains Mono for OCR results, risk scores, and coordinates. text-xs or text-sm."
+      },
+      "scale": {
+        "h1": "text-5xl md:text-7xl font-bold tracking-tight",
+        "h2": "text-3xl md:text-5xl font-semibold tracking-tight",
+        "h3": "text-2xl md:text-3xl font-medium",
+        "body_lg": "text-lg leading-relaxed",
+        "body_base": "text-base leading-relaxed",
+        "caption": "text-xs font-mono uppercase tracking-widest text-muted-foreground"
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "DEFAULT": "#0F172A",
+          "foreground": "#F8FAFC",
+          "description": "Slate 900 - Deep Navy for Authority and Navigation"
+        },
+        "secondary": {
+          "DEFAULT": "#334155",
+          "foreground": "#F8FAFC",
+          "description": "Slate 700 - Sub-headers and Secondary Actions"
+        },
+        "accent": {
+          "DEFAULT": "#0EA5E9",
+          "foreground": "#FFFFFF",
+          "description": "Sky 500 - AI/Tech highlights, Links, Active States"
+        },
+        "background": {
+          "DEFAULT": "#F8FAFC",
+          "paper": "#FFFFFF",
+          "dark": "#020617"
+        },
+        "risk": {
+          "high": "#EF4444",
+          "medium": "#F59E0B",
+          "low": "#10B981",
+          "description": "Standard traffic light system for Risk Reports"
+        },
+        "border": {
+            "DEFAULT": "#E2E8F0",
+            "active": "#0EA5E9"
+        }
+      },
+      "gradients": {
+        "hero": "bg-gradient-to-b from-slate-50 to-slate-100",
+        "trust_badge": "bg-gradient-to-r from-slate-900 to-slate-800"
+      }
+    },
+    "visual_enhancers": {
+      "borders": "Sharp 1px borders. No rounded corners greater than 4px. Mimic 'Legal Documents'.",
+      "shadows": "shadow-sm for cards (Paper lift), shadow-xl for modals (Floating document).",
+      "textures": "Subtle noise/grain overlay on backgrounds to simulate high-quality paper.",
+      "glassmorphism": "Used only on sticky headers. backdrop-blur-md bg-white/80 border-b border-slate-200/50."
+    },
+    "layout_strategy": {
+      "marketing": {
+        "grid": "Tetris Grid (Asymmetric)",
+        "rules": [
+          "Use grid-cols-12 for desktop.",
+          "Hero section: 60% text (Left), 40% Visual (Right/Overlapping).",
+          "Use massive whitespace (py-24 or py-32) between sections."
+        ]
+      },
+      "dashboard": {
+        "grid": "Bento Grid (High Density)",
+        "rules": [
+          "Use grid-cols-4 for analytics.",
+          "Map takes prominence (col-span-2 row-span-2).",
+          "Risk Score is always top-right (col-span-1)."
+        ]
+      }
+    },
+    "components": {
+      "buttons": {
+        "primary": "bg-primary text-primary-foreground hover:bg-primary/90 rounded-sm px-8 py-3 font-medium transition-all shadow-sm",
+        "secondary": "border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-sm px-8 py-3 font-medium transition-all",
+        "destructive": "bg-red-600 text-white hover:bg-red-700 rounded-sm"
+      },
+      "cards": {
+        "base": "bg-card text-card-foreground border border-border shadow-sm rounded-sm p-6",
+        "interactive": "hover:border-accent/50 transition-colors cursor-pointer"
+      },
+      "inputs": {
+        "base": "flex h-10 w-full rounded-sm border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      },
+      "badges": {
+        "risk_high": "bg-red-100 text-red-700 border border-red-200 px-2 py-0.5 text-xs font-mono rounded-sm",
+        "risk_medium": "bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 text-xs font-mono rounded-sm",
+        "risk_low": "bg-emerald-100 text-emerald-700 border border-emerald-200 px-2 py-0.5 text-xs font-mono rounded-sm"
+      }
+    },
+    "motion": {
+      "principles": "Quick, precise, no bounce. Ease-out-quart.",
+      "transitions": "transition-all duration-200 ease-out",
+      "loading": "Skeleton loaders (shimmer) for data fetching. Spinner for actions."
+    },
+    "media": {
+        "images": [
+            {
+                "category": "hero_background",
+                "url": "https://images.unsplash.com/photo-1764686630524-2d399d87fa2d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTJ8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBpbmRpYW4lMjBob3VzZSUyMGV4dGVyaW9yJTIwYXJjaGl0ZWN0dXJlfGVufDB8fHx8MTc3MTc0OTE1OXww&ixlib=rb-4.1.0&q=85",
+                "description": "Modern skyscraper against a clear blue sky - Use for Hero Section Background with overlay"
+            },
+            {
+                "category": "legal_trust",
+                "url": "https://images.pexels.com/photos/7841462/pexels-photo-7841462.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+                "description": "Lawyers discussing legal documents - Use for 'Why Choose Us' or 'Legal Verification' section"
+            },
+            {
+                "category": "map_context",
+                "url": "https://images.unsplash.com/photo-1687158266872-fd2773fa76c6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA4Mzl8MHwxfHNlYXJjaHwzfHxiYW5nYWxvcmUlMjBjaXR5JTIwYWVyaWFsJTIwdmlldyUyMG1hcHxlbnwwfHx8fDE3NzE3NDkxNjB8MA&ixlib=rb-4.1.0&q=85",
+                "description": "Aerial view of city with tall buildings - Use for Dashboard placeholder or Location features"
+            },
+            {
+                 "category": "document_review",
+                 "url": "https://images.pexels.com/photos/7841450/pexels-photo-7841450.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+                 "description": "Lawyer examining documents - Use for 'How it Works' section"
+            }
+        ]
+    },
+    "universal_guidelines": {
+        "do_not": [
+            "Do NOT use gradients for text.",
+            "Do NOT use rounded-xl or rounded-2xl. Keep it sharp (rounded-sm or rounded-md).",
+            "Do NOT use generic 'Lorem Ipsum'. Use realistic legal placeholder text.",
+            "Do NOT center align dashboard data widgets."
+        ],
+        "must_do": [
+            "MUST use 'sonner' for toast notifications.",
+            "MUST support Dark/Light mode toggle, but optimize for Light mode (Trust).",
+            "MUST add 'data-testid' to all interactive elements.",
+            "MUST use standard Shadcn component names but customize styling via Tailwind classes."
+        ]
+    },
+    "tech_stack_instructions": {
+        "icons": "Use 'lucide-react' for all UI icons.",
+        "charts": "Use 'recharts' (via Shadcn Charts) for Risk Scores and Timelines.",
+        "maps": "Use 'react-map-gl' or 'leaflet' for property mapping.",
+        "tables": "Use '@tanstack/react-table' (via Shadcn Data Table) for Title Chains."
+    }
+  }
+}
