@@ -465,7 +465,7 @@ const UploadProperty = () => {
                   <Button
                     data-testid="proceed-analysis-btn"
                     onClick={proceedToAnalysis}
-                    disabled={documents.length === 0 || documents.some(d => d.status === 'uploading')}
+                    disabled={documents.some(d => d.status === 'uploading')}
                     className="btn-primary flex-1"
                   >
                     <Sparkles className="mr-2 h-4 w-4" />
