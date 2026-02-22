@@ -27,7 +27,9 @@ import {
   Clock,
   TrendingUp,
   AlertTriangle,
-  XCircle
+  XCircle,
+  Search,
+  Sparkles
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -106,6 +108,12 @@ const Dashboard = () => {
             </Link>
             
             <div className="flex items-center gap-4">
+              <Link to="/search">
+                <Button data-testid="nav-search-btn" className="btn-secondary">
+                  <Search className="h-4 w-4 mr-2" />
+                  Search
+                </Button>
+              </Link>
               <Link to="/upload">
                 <Button data-testid="new-property-btn" className="btn-primary">
                   <Plus className="h-4 w-4 mr-2" />
@@ -237,6 +245,12 @@ const Dashboard = () => {
               Quick Actions
             </h2>
             <div className="space-y-3">
+              <Link to="/search" className="block">
+                <Button data-testid="quick-search-btn" className="w-full justify-start btn-secondary">
+                  <Search className="mr-2 h-4 w-4 text-cyan-400" />
+                  Search Properties
+                </Button>
+              </Link>
               <Link to="/upload" className="block">
                 <Button data-testid="quick-upload-btn" className="w-full justify-start btn-secondary">
                   <Plus className="mr-2 h-4 w-4 text-cyan-400" />
@@ -249,10 +263,6 @@ const Dashboard = () => {
                   View Pricing
                 </Button>
               </Link>
-              <Button data-testid="quick-help-btn" className="w-full justify-start btn-secondary">
-                <FileText className="mr-2 h-4 w-4 text-cyan-400" />
-                Sample Report
-              </Button>
             </div>
           </div>
 
