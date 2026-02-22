@@ -104,6 +104,7 @@ const Landing = () => {
               </span>
             </div>
             <div className="hidden md:flex items-center gap-8">
+              <Link to="/search" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Search Properties</Link>
               <a href="#features" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Features</a>
               <a href="#how-it-works" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">How it Works</a>
               <a href="#pricing" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Pricing</a>
@@ -160,9 +161,12 @@ const Landing = () => {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <Button data-testid="hero-demo-btn" size="lg" className="btn-secondary text-base">
-                  View Sample Report
-                </Button>
+                <Link to="/search">
+                  <Button data-testid="hero-search-btn" size="lg" className="btn-secondary text-base">
+                    <FileSearch className="mr-2 h-5 w-5" />
+                    Search Properties
+                  </Button>
+                </Link>
               </div>
               
               {/* Trust Indicators */}
