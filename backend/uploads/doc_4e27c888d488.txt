@@ -1,0 +1,9 @@
+SALE DEED
+        
+        Survey Number: 123/4
+        Owner Name: Test Owner
+        Father Name: Test Father
+        Registration Date: 2023-01-15
+        Registration Number: REG123456
+        Property Address: Test Village, Test Taluk, Test District
+        
