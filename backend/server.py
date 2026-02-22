@@ -1345,7 +1345,7 @@ async def get_mock_government_records(survey_no: str, state: str) -> dict:
         "disclaimer": "MOCK DATA - Real government API integration pending"
     }
 
-@api_router.get("/government-records/{survey_no}")
+@api_router.get("/government-records/{survey_no:path}")
 async def fetch_government_records(survey_no: str, state: str = "Karnataka"):
     records = await get_mock_government_records(survey_no, state)
     return records
