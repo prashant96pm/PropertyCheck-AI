@@ -63,7 +63,7 @@ const PropertyDetail = () => {
       
       if (propRes.data.survey_no) {
         const govtRes = await axios.get(
-          `${API}/government-records/${propRes.data.survey_no}?state=${propRes.data.state}`,
+          `${API}/government-records/${encodeURIComponent(propRes.data.survey_no)}?state=${encodeURIComponent(propRes.data.state)}`,
           { withCredentials: true }
         );
         setGovtRecords(govtRes.data);
