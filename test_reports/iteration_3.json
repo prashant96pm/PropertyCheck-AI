@@ -68,6 +68,9 @@
   
   "updated_files": [
     "/app/backend/tests/test_navigation_apis.py",
+    "/app/frontend/src/pages/UploadProperty.js",
+    "/app/frontend/src/pages/PropertyDetail.js",
+    "/app/backend/server.py",
     "/app/test_reports/iteration_3.json"
   ],
   
