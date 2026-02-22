@@ -660,7 +660,7 @@ Be specific about issues found. If documents are missing or incomplete, flag tha
             elif "```" in json_str:
                 json_str = json_str.split("```")[1].split("```")[0]
             return json.loads(json_str.strip())
-        except (json.JSONDecodeError, ValueError):
+        except (json.JSONDecodeError, ValueError, IndexError):
             return generate_mock_risk_analysis(property, documents)
             
     except Exception as e:
