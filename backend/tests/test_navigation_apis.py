@@ -191,13 +191,11 @@ class TestAuthAPIs:
         print(f"✓ User registration successful - email: {test_email}")
     
     def test_login_user(self):
-        """Test user login with known credentials"""
-        # First register
-        creds = self.test_register_user()
-        
+        """Test user login with existing test user"""
+        # Use an already registered user
         payload = {
-            "email": creds["email"],
-            "password": creds["password"]
+            "email": "test_nav_1771779964@test.com",
+            "password": "Test123!@"
         }
         response = requests.post(f"{BASE_URL}/api/auth/login", json=payload)
         assert response.status_code == 200
