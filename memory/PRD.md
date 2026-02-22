@@ -33,7 +33,13 @@ Build a production-grade SaaS web application called PropertyCheck AI that verif
 - DPDP Act compliance
 
 ## What's Been Implemented (Jan 22, 2026)
+
 ### MVP Complete ✅
+- [x] **Glassmorphism Dark Theme** - Deep navy to charcoal gradient background
+- [x] **Pulsing Risk Meter** - Circular gauge with neon glow effects (green/orange/red)
+- [x] **Glowing Border Cards** - Green (verified), Orange (caution), Red (high risk)
+- [x] **Shimmer Loading Animations** - Skeleton loaders for smooth UX
+- [x] **Floating Action Button** - Quick "Scan Document" access
 - [x] Landing page with hero, features, pricing sections
 - [x] User authentication (email/password + Google OAuth)
 - [x] Protected dashboard with property management
@@ -42,12 +48,18 @@ Build a production-grade SaaS web application called PropertyCheck AI that verif
 - [x] Tesseract OCR text extraction
 - [x] Gemini AI document field extraction
 - [x] AI Risk Analysis with score, flags, recommendations
-- [x] Title chain visualization
+- [x] Title chain visualization with timeline
 - [x] PDF report generation and download
 - [x] Government records integration (MOCKED)
 - [x] Pricing page with packages (₹499, ₹999, ₹1999)
 - [x] Stripe payment integration
-- [x] Dashboard statistics
+
+### UI/UX Features
+- Dark glassmorphism theme with blur effects
+- Animated grid background
+- Neon text gradients and glowing effects
+- Interactive hover states with glow intensification
+- Responsive design for all screen sizes
 
 ## Prioritized Backlog
 
@@ -76,6 +88,12 @@ Build a production-grade SaaS web application called PropertyCheck AI that verif
 - [ ] Historical price trend analysis
 - [ ] Legal expert marketplace
 - [ ] White-label solution for partners
+
+## Environment Variables
+- EMERGENT_LLM_KEY: Gemini AI integration
+- STRIPE_API_KEY: Payment processing
+- DATA_GOV_API_KEY: Government data access (579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b)
+- JWT_SECRET_KEY: Session management
 
 ## Next Tasks List
 1. Integrate live Bhoomi API for Karnataka RTC records
