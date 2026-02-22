@@ -127,27 +127,7 @@ const UniversalSearch = () => {
       toast.error('Please enter a search query');
       return;
     }
-    
-    setLoading(true);
-    try {
-      const response = await axios.post(`${API}/property/ai-smart-search`, {
-        query: smartQuery
-      }, { withCredentials: true });
-      
-      setResults(response.data.results || []);
-      setTotalResults(response.data.total || 0);
-      setSearchType('ai_smart_search');
-      
-      if (response.data.results?.length === 0) {
-        toast.info('No properties found matching your query');
-      } else {
-        toast.success(`Found ${response.data.total} properties`);
-      }
-    } catch (error) {
-      toast.error('Search failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    await performSmartSearch(smartQuery);
   };
 
   const handleAdvancedSearch = async () => {
