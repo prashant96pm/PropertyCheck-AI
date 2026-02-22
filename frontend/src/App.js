@@ -12,6 +12,8 @@ import UploadProperty from './pages/UploadProperty';
 import PropertyDetail from './pages/PropertyDetail';
 import Pricing from './pages/Pricing';
 import PaymentSuccess from './pages/PaymentSuccess';
+import UniversalSearch from './pages/UniversalSearch';
+import PropertyProfile from './pages/PropertyProfile';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -35,6 +37,8 @@ function AppRouter() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/pricing" element={<Pricing />} />
+      <Route path="/search" element={<UniversalSearch />} />
+      <Route path="/property-profile/:propertyId" element={<PropertyProfile />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       
       {/* Protected routes */}
@@ -74,9 +78,9 @@ function App() {
           position="top-right"
           toastOptions={{
             style: {
-              background: 'hsl(var(--card))',
-              color: 'hsl(var(--card-foreground))',
-              border: '1px solid hsl(var(--border))',
+              background: 'hsl(222, 47%, 11%)',
+              color: 'hsl(210, 40%, 98%)',
+              border: '1px solid hsl(217, 33%, 20%)',
             },
           }}
         />
