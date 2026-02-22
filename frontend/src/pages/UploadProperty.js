@@ -1,12 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import {
   Select,
   SelectContent,
@@ -14,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
+import FloatingActionButton from '../components/FloatingActionButton';
 import { 
   Shield, 
   Upload, 
@@ -22,7 +21,8 @@ import {
   CheckCircle2, 
   ArrowLeft,
   X,
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -50,14 +50,12 @@ const DOC_TYPES = [
 ];
 
 const UploadProperty = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [propertyId, setPropertyId] = useState(null);
   
-  // Property form state
   const [propertyForm, setPropertyForm] = useState({
     survey_no: '',
     khata_no: '',
@@ -68,7 +66,6 @@ const UploadProperty = () => {
     address: ''
   });
   
-  // Document upload state
   const [documents, setDocuments] = useState([]);
   const [currentDocType, setCurrentDocType] = useState('sale_deed');
   const [uploadingDoc, setUploadingDoc] = useState(false);
@@ -90,7 +87,7 @@ const UploadProperty = () => {
       'application/pdf': ['.pdf'],
       'image/*': ['.png', '.jpg', '.jpeg', '.tiff', '.bmp']
     },
-    maxSize: 20 * 1024 * 1024 // 20MB
+    maxSize: 20 * 1024 * 1024
   });
 
   const handlePropertySubmit = async (e) => {
@@ -171,15 +168,17 @@ const UploadProperty = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen gradient-bg">
+      <div className="fixed inset-0 grid-bg opacity-30 pointer-events-none" />
+      
       {/* Navigation */}
       <nav className="glass-header sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/dashboard" className="flex items-center gap-2">
-              <ArrowLeft className="h-5 w-5 text-muted-foreground" />
-              <Shield className="h-8 w-8 text-primary" />
-              <span className="text-xl font-semibold text-primary" style={{ fontFamily: 'Playfair Display' }}>
+              <ArrowLeft className="h-5 w-5 text-slate-400" />
+              <Shield className="h-8 w-8 text-cyan-400" />
+              <span className="text-xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
                 PropertyCheck AI
               </span>
             </Link>
@@ -187,18 +186,18 @@ const UploadProperty = () => {
         </div>
       </nav>
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Progress Steps */}
         <div className="flex items-center justify-center mb-8">
           <div className="flex items-center">
-            <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
-              step >= 1 ? 'bg-primary text-primary-foreground' : 'bg-slate-200 text-slate-500'
+            <div className={`h-10 w-10 rounded-full flex items-center justify-center font-medium transition-all duration-300 ${
+              step >= 1 ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/30' : 'bg-slate-700 text-slate-400'
             }`}>
               1
             </div>
-            <div className={`w-24 h-1 ${step >= 2 ? 'bg-primary' : 'bg-slate-200'}`} />
-            <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
-              step >= 2 ? 'bg-primary text-primary-foreground' : 'bg-slate-200 text-slate-500'
+            <div className={`w-24 h-1 transition-all duration-300 ${step >= 2 ? 'bg-cyan-500' : 'bg-slate-700'}`} />
+            <div className={`h-10 w-10 rounded-full flex items-center justify-center font-medium transition-all duration-300 ${
+              step >= 2 ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/30' : 'bg-slate-700 text-slate-400'
             }`}>
               2
             </div>
@@ -207,151 +206,159 @@ const UploadProperty = () => {
 
         {/* Step 1: Property Details */}
         {step === 1 && (
-          <Card className="card-base">
-            <CardHeader>
-              <CardTitle className="text-2xl" style={{ fontFamily: 'Playfair Display' }}>
+          <div className="glass-card">
+            <div className="mb-6">
+              <h1 className="text-2xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
                 Property Details
-              </CardTitle>
-              <CardDescription>
+              </h1>
+              <p className="text-slate-400 text-sm mt-1">
                 Enter the basic details of the property you want to verify
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handlePropertySubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="survey_no">Survey Number *</Label>
-                    <Input
-                      id="survey_no"
-                      data-testid="survey-no-input"
-                      value={propertyForm.survey_no}
-                      onChange={(e) => setPropertyForm(prev => ({ ...prev, survey_no: e.target.value }))}
-                      placeholder="e.g., 123/4"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="khata_no">Khata Number</Label>
-                    <Input
-                      id="khata_no"
-                      data-testid="khata-no-input"
-                      value={propertyForm.khata_no}
-                      onChange={(e) => setPropertyForm(prev => ({ ...prev, khata_no: e.target.value }))}
-                      placeholder="e.g., KH-123"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="state">State *</Label>
-                    <Select 
-                      value={propertyForm.state}
-                      onValueChange={(value) => setPropertyForm(prev => ({ ...prev, state: value }))}
-                    >
-                      <SelectTrigger data-testid="state-select">
-                        <SelectValue placeholder="Select state" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {INDIAN_STATES.map(state => (
-                          <SelectItem key={state} value={state}>{state}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="district">District *</Label>
-                    <Input
-                      id="district"
-                      data-testid="district-input"
-                      value={propertyForm.district}
-                      onChange={(e) => setPropertyForm(prev => ({ ...prev, district: e.target.value }))}
-                      placeholder="e.g., Bangalore Urban"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="taluk">Taluk</Label>
-                    <Input
-                      id="taluk"
-                      data-testid="taluk-input"
-                      value={propertyForm.taluk}
-                      onChange={(e) => setPropertyForm(prev => ({ ...prev, taluk: e.target.value }))}
-                      placeholder="e.g., Anekal"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="village">Village</Label>
-                    <Input
-                      id="village"
-                      data-testid="village-input"
-                      value={propertyForm.village}
-                      onChange={(e) => setPropertyForm(prev => ({ ...prev, village: e.target.value }))}
-                      placeholder="e.g., Sarjapur"
-                    />
-                  </div>
-                </div>
-
+              </p>
+            </div>
+            
+            <form onSubmit={handlePropertySubmit} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="address">Full Address</Label>
+                  <Label htmlFor="survey_no" className="text-slate-300">Survey Number *</Label>
                   <Input
-                    id="address"
-                    data-testid="address-input"
-                    value={propertyForm.address}
-                    onChange={(e) => setPropertyForm(prev => ({ ...prev, address: e.target.value }))}
-                    placeholder="Complete property address"
+                    id="survey_no"
+                    data-testid="survey-no-input"
+                    value={propertyForm.survey_no}
+                    onChange={(e) => setPropertyForm(prev => ({ ...prev, survey_no: e.target.value }))}
+                    placeholder="e.g., 123/4"
+                    className="input-glass"
+                    required
                   />
                 </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="khata_no" className="text-slate-300">Khata Number</Label>
+                  <Input
+                    id="khata_no"
+                    data-testid="khata-no-input"
+                    value={propertyForm.khata_no}
+                    onChange={(e) => setPropertyForm(prev => ({ ...prev, khata_no: e.target.value }))}
+                    placeholder="e.g., KH-123"
+                    className="input-glass"
+                  />
+                </div>
+              </div>
 
-                <Button 
-                  data-testid="submit-property-btn"
-                  type="submit" 
-                  className="w-full btn-primary"
-                  disabled={loading || !propertyForm.survey_no || !propertyForm.state || !propertyForm.district}
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating Property...
-                    </>
-                  ) : (
-                    'Continue to Document Upload'
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="state" className="text-slate-300">State *</Label>
+                  <Select 
+                    value={propertyForm.state}
+                    onValueChange={(value) => setPropertyForm(prev => ({ ...prev, state: value }))}
+                  >
+                    <SelectTrigger data-testid="state-select" className="input-glass">
+                      <SelectValue placeholder="Select state" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-900 border-slate-700">
+                      {INDIAN_STATES.map(state => (
+                        <SelectItem key={state} value={state} className="text-slate-300 hover:bg-slate-800">
+                          {state}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="district" className="text-slate-300">District *</Label>
+                  <Input
+                    id="district"
+                    data-testid="district-input"
+                    value={propertyForm.district}
+                    onChange={(e) => setPropertyForm(prev => ({ ...prev, district: e.target.value }))}
+                    placeholder="e.g., Bangalore Urban"
+                    className="input-glass"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="taluk" className="text-slate-300">Taluk</Label>
+                  <Input
+                    id="taluk"
+                    data-testid="taluk-input"
+                    value={propertyForm.taluk}
+                    onChange={(e) => setPropertyForm(prev => ({ ...prev, taluk: e.target.value }))}
+                    placeholder="e.g., Anekal"
+                    className="input-glass"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="village" className="text-slate-300">Village</Label>
+                  <Input
+                    id="village"
+                    data-testid="village-input"
+                    value={propertyForm.village}
+                    onChange={(e) => setPropertyForm(prev => ({ ...prev, village: e.target.value }))}
+                    placeholder="e.g., Sarjapur"
+                    className="input-glass"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-slate-300">Full Address</Label>
+                <Input
+                  id="address"
+                  data-testid="address-input"
+                  value={propertyForm.address}
+                  onChange={(e) => setPropertyForm(prev => ({ ...prev, address: e.target.value }))}
+                  placeholder="Complete property address"
+                  className="input-glass"
+                />
+              </div>
+
+              <Button 
+                data-testid="submit-property-btn"
+                type="submit" 
+                className="w-full btn-primary"
+                disabled={loading || !propertyForm.survey_no || !propertyForm.state || !propertyForm.district}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating Property...
+                  </>
+                ) : (
+                  'Continue to Document Upload'
+                )}
+              </Button>
+            </form>
+          </div>
         )}
 
         {/* Step 2: Document Upload */}
         {step === 2 && (
           <div className="space-y-6">
-            <Card className="card-base">
-              <CardHeader>
-                <CardTitle className="text-2xl" style={{ fontFamily: 'Playfair Display' }}>
+            <div className="glass-card">
+              <div className="mb-6">
+                <h1 className="text-2xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
                   Upload Documents
-                </CardTitle>
-                <CardDescription>
+                </h1>
+                <p className="text-slate-400 text-sm mt-1">
                   Upload property documents for AI-powered OCR and analysis
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+                </p>
+              </div>
+              
+              <div className="space-y-6">
                 {/* Document Type Selection */}
                 <div className="space-y-2">
-                  <Label>Document Type</Label>
+                  <Label className="text-slate-300">Document Type</Label>
                   <Select value={currentDocType} onValueChange={setCurrentDocType}>
-                    <SelectTrigger data-testid="doc-type-select">
+                    <SelectTrigger data-testid="doc-type-select" className="input-glass">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-slate-900 border-slate-700">
                       {DOC_TYPES.map(type => (
-                        <SelectItem key={type.value} value={type.value}>
+                        <SelectItem key={type.value} value={type.value} className="text-slate-300 hover:bg-slate-800">
                           {type.label}
                         </SelectItem>
                       ))}
@@ -363,20 +370,22 @@ const UploadProperty = () => {
                 <div
                   {...getRootProps()}
                   data-testid="document-dropzone"
-                  className={`border-2 border-dashed rounded-sm p-8 text-center cursor-pointer transition-colors ${
-                    isDragActive ? 'border-accent bg-accent/5' : 'border-slate-300 hover:border-accent'
+                  className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-300 ${
+                    isDragActive 
+                      ? 'border-cyan-500 bg-cyan-500/10' 
+                      : 'border-slate-600 hover:border-cyan-500/50 hover:bg-slate-800/50'
                   }`}
                 >
                   <input {...getInputProps()} />
-                  <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <Upload className="h-12 w-12 text-slate-500 mx-auto mb-4" />
                   {isDragActive ? (
-                    <p className="text-accent">Drop files here...</p>
+                    <p className="text-cyan-400">Drop files here...</p>
                   ) : (
                     <>
-                      <p className="text-muted-foreground mb-2">
+                      <p className="text-slate-400 mb-2">
                         Drag & drop documents here, or click to browse
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-slate-500">
                         Supports PDF, PNG, JPG, TIFF (max 20MB)
                       </p>
                     </>
@@ -386,39 +395,40 @@ const UploadProperty = () => {
                 {/* Document List */}
                 {documents.length > 0 && (
                   <div className="space-y-3">
-                    <Label>Queued Documents</Label>
+                    <Label className="text-slate-300">Queued Documents</Label>
                     {documents.map((doc, index) => (
                       <div 
                         key={index}
-                        className="flex items-center justify-between p-3 border rounded-sm"
+                        className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700"
                       >
                         <div className="flex items-center gap-3">
-                          <FileText className="h-5 w-5 text-muted-foreground" />
+                          <FileText className="h-5 w-5 text-cyan-400" />
                           <div>
-                            <p className="text-sm font-medium">{doc.name}</p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-sm font-medium text-white">{doc.name}</p>
+                            <p className="text-xs text-slate-500">
                               {DOC_TYPES.find(t => t.value === doc.type)?.label}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
                           {doc.status === 'pending' && (
-                            <span className="text-xs text-muted-foreground">Pending</span>
+                            <span className="text-xs text-slate-500">Pending</span>
                           )}
                           {doc.status === 'uploading' && (
-                            <Loader2 className="h-4 w-4 animate-spin text-accent" />
+                            <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />
                           )}
                           {doc.status === 'uploaded' && (
-                            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                           )}
                           {doc.status === 'error' && (
-                            <AlertCircle className="h-4 w-4 text-red-600" />
+                            <AlertCircle className="h-4 w-4 text-red-400" />
                           )}
                           {doc.status === 'pending' && (
                             <Button
                               variant="ghost"
                               size="sm"
                               onClick={() => removeDocument(index)}
+                              className="text-slate-500 hover:text-white"
                             >
                               <X className="h-4 w-4" />
                             </Button>
@@ -458,6 +468,7 @@ const UploadProperty = () => {
                     disabled={documents.length === 0 || documents.some(d => d.status === 'uploading')}
                     className="btn-primary flex-1"
                   >
+                    <Sparkles className="mr-2 h-4 w-4" />
                     {documents.every(d => d.status === 'uploaded') ? (
                       'Proceed to Analysis'
                     ) : (
@@ -465,27 +476,23 @@ const UploadProperty = () => {
                     )}
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* OCR Results Preview */}
             {documents.some(d => d.status === 'uploaded' && d.ocrText) && (
-              <Card className="card-base">
-                <CardHeader>
-                  <CardTitle className="text-lg">OCR Extraction Preview</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {documents.filter(d => d.status === 'uploaded').map((doc, index) => (
-                    <div key={index} className="mb-4 last:mb-0">
-                      <p className="text-sm font-medium mb-2">{doc.name}</p>
-                      <div className="bg-slate-100 p-3 rounded-sm text-xs font-mono max-h-40 overflow-auto">
-                        {doc.ocrText?.substring(0, 500)}
-                        {doc.ocrText?.length > 500 && '...'}
-                      </div>
+              <div className="glass-card-green">
+                <h2 className="text-lg font-semibold text-white mb-4">OCR Extraction Preview</h2>
+                {documents.filter(d => d.status === 'uploaded').map((doc, index) => (
+                  <div key={index} className="mb-4 last:mb-0">
+                    <p className="text-sm font-medium text-emerald-400 mb-2">{doc.name}</p>
+                    <div className="bg-slate-900/50 p-3 rounded-lg text-xs font-mono text-slate-400 max-h-40 overflow-auto">
+                      {doc.ocrText?.substring(0, 500)}
+                      {doc.ocrText?.length > 500 && '...'}
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         )}
