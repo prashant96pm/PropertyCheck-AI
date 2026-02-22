@@ -1,22 +1,34 @@
 {
-  "summary": "Comprehensive testing of PropertyCheck AI P0 Navigation & Universal Property Search features. All navigation flows working correctly. Backend APIs 100% functional. Frontend navigation 100% working. Property 360 Profile with all 6 tabs fully functional.",
+  "summary": "Comprehensive testing of PropertyCheck AI P0 Navigation & Universal Property Search features. All navigation flows working correctly. Backend APIs functional. Property 360 Profile with all 6 tabs fully functional. Fixed Skip button issue. Found 1 critical bug: Survey numbers with slashes break government records API.",
   
   "backend_issues": {
-    "critical": [],
+    "critical": [
+      {
+        "endpoint": "/api/government-records/{survey_no}",
+        "issue": "Survey numbers containing slashes (e.g., TEST/003) cause 404 error because FastAPI interprets the slash as a path separator. The survey_no needs URL encoding on frontend or path:path parameter on backend.",
+        "priority": "HIGH"
+      }
+    ],
     "minor": []
   },
   
   "frontend_issues": {
     "ui_bugs": [
       {
-        "component": "UploadProperty - Step 2",
-        "issue": "Skip & View Property button is disabled when no documents uploaded. Users cannot skip document upload to view their created property.",
-        "selector": "[data-testid='proceed-analysis-btn']",
-        "priority": "MEDIUM",
-        "fix": "Change line 468 in UploadProperty.js to: disabled={documents.some(d => d.status === 'uploading')} - remove documents.length === 0 condition to allow skip"
+        "component": "PropertyDetail.js - Government Records fetch",
+        "issue": "Survey numbers with slashes are not URL-encoded before calling government-records API, causing 404 errors and page redirect to dashboard",
+        "selector": "fetchPropertyData() line 66",
+        "priority": "HIGH",
+        "fix": "URL encode the survey_no: encodeURIComponent(propRes.data.survey_no)"
       }
     ],
-    "integration_issues": [],
+    "integration_issues": [
+      {
+        "flow": "Dashboard → Property Detail → Government Records",
+        "issue": "Properties with survey_no containing '/' fail to load government records, causing toast error 'Failed to load property data' and redirect to dashboard",
+        "affected_selectors": ["[data-testid='property-card-*']"]
+      }
+    ],
     "design_issues": []
   },
   
