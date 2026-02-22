@@ -174,7 +174,8 @@ class TestAuthAPIs:
     def test_register_user(self):
         """Test user registration"""
         import time
-        test_email = f"test_api_{int(time.time())}@test.com"
+        import random
+        test_email = f"test_api_{int(time.time())}_{random.randint(1000,9999)}@test.com"
         payload = {
             "email": test_email,
             "password": "Test123!@",
@@ -188,9 +189,6 @@ class TestAuthAPIs:
         assert "user" in data
         assert data["user"]["email"] == test_email
         print(f"✓ User registration successful - email: {test_email}")
-        
-        # Return credentials for other tests
-        return {"email": test_email, "password": "Test123!@", "token": data["access_token"]}
     
     def test_login_user(self):
         """Test user login with known credentials"""
