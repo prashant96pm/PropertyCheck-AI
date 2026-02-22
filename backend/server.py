@@ -518,7 +518,7 @@ async def extract_document_fields(ocr_text: str, doc_type: str) -> Dict:
             elif "```" in json_str:
                 json_str = json_str.split("```")[1].split("```")[0]
             return json.loads(json_str.strip())
-        except:
+        except (json.JSONDecodeError, ValueError):
             return {"raw_extraction": response}
     except Exception as e:
         logger.error(f"AI extraction error: {e}")
