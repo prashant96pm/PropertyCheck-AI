@@ -3,14 +3,15 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { 
   Shield, 
   CheckCircle2, 
   ArrowLeft,
   Loader2,
-  CreditCard
+  CreditCard,
+  Sparkles,
+  Zap
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -67,7 +68,6 @@ const Pricing = () => {
         { withCredentials: true }
       );
 
-      // Redirect to Stripe checkout
       window.location.href = response.data.checkout_url;
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to initiate payment');
@@ -81,37 +81,42 @@ const Pricing = () => {
       name: pricing.basic.name,
       price: `₹${pricing.basic.amount}`,
       features: pricing.basic.features,
-      popular: false
+      popular: false,
+      icon: <FileText className="h-6 w-6" />
     },
     {
       key: 'standard',
       name: pricing.standard.name,
       price: `₹${pricing.standard.amount}`,
       features: pricing.standard.features,
-      popular: true
+      popular: true,
+      icon: <Sparkles className="h-6 w-6" />
     },
     {
       key: 'premium',
       name: pricing.premium.name,
       price: `₹${pricing.premium.amount}`,
       features: pricing.premium.features,
-      popular: false
+      popular: false,
+      icon: <Zap className="h-6 w-6" />
     }
   ] : [];
 
   return (
-    <div className="min-h-screen bg-slate-50 noise-texture">
+    <div className="min-h-screen gradient-bg">
+      <div className="fixed inset-0 grid-bg opacity-30 pointer-events-none" />
+      
       {/* Navigation */}
       <nav className="glass-header sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
-              <Link to={isAuthenticated ? "/dashboard" : "/"} className="text-muted-foreground hover:text-primary transition-colors">
+              <Link to={isAuthenticated ? "/dashboard" : "/"} className="text-slate-400 hover:text-white transition-colors">
                 <ArrowLeft className="h-5 w-5" />
               </Link>
               <Link to="/" className="flex items-center gap-2">
-                <Shield className="h-8 w-8 text-primary" />
-                <span className="text-xl font-semibold text-primary" style={{ fontFamily: 'Playfair Display' }}>
+                <Shield className="h-8 w-8 text-cyan-400" />
+                <span className="text-xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
                   PropertyCheck AI
                 </span>
               </Link>
@@ -120,7 +125,7 @@ const Pricing = () => {
             {!isAuthenticated && (
               <div className="flex items-center gap-4">
                 <Link to="/login">
-                  <Button variant="ghost">Sign In</Button>
+                  <Button variant="ghost" className="text-slate-300 hover:text-white">Sign In</Button>
                 </Link>
                 <Link to="/register">
                   <Button className="btn-primary">Get Started</Button>
@@ -131,16 +136,16 @@ const Pricing = () => {
         </div>
       </nav>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary tracking-tight mb-4" style={{ fontFamily: 'Playfair Display' }}>
-            Choose Your Plan
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white" style={{ fontFamily: 'Playfair Display' }}>
+            Choose Your <span className="text-gradient">Plan</span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
             Select the verification package that best fits your needs. All plans include AI-powered document analysis.
           </p>
           {propertyId && (
-            <Badge variant="outline" className="mt-4">
+            <Badge variant="outline" className="mt-4 border-cyan-500/30 text-cyan-400">
               Purchasing for property: {propertyId}
             </Badge>
           )}
@@ -148,64 +153,69 @@ const Pricing = () => {
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-accent" />
+            <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
           </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-8">
             {packages.map((plan) => (
-              <Card 
+              <div 
                 key={plan.key} 
-                className={`card-base relative ${plan.popular ? 'border-accent shadow-lg' : ''}`}
+                className={`${plan.popular ? 'glass-card-blue' : 'glass-card'} relative`}
               >
                 {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white">
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-cyan-500 text-white border-0">
                     Most Popular
                   </Badge>
                 )}
-                <CardHeader className="text-center">
-                  <CardTitle className="text-xl">{plan.name}</CardTitle>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold text-primary">{plan.price}</span>
-                    <span className="text-muted-foreground"> / property</span>
+                <div className="text-center mb-6">
+                  <div className={`h-14 w-14 rounded-xl mx-auto mb-4 flex items-center justify-center ${
+                    plan.popular ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-700 text-slate-400'
+                  }`}>
+                    {plan.icon}
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3 mb-6">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 className="h-4 w-4 text-accent flex-shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    data-testid={`purchase-${plan.key}-btn`}
-                    className={`w-full ${plan.popular ? 'btn-primary' : 'btn-secondary'}`}
-                    onClick={() => handlePurchase(plan.key)}
-                    disabled={processingPayment}
-                  >
-                    {processingPayment ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <CreditCard className="h-4 w-4 mr-2" />
-                        Purchase
-                      </>
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
+                  <h3 className="text-xl font-semibold text-white">{plan.name}</h3>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold text-gradient">{plan.price}</span>
+                    <span className="text-slate-400"> / property</span>
+                  </div>
+                </div>
+                
+                <ul className="space-y-3 mb-6">
+                  {plan.features.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2 text-sm text-slate-300">
+                      <CheckCircle2 className="h-4 w-4 text-cyan-400 flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                
+                <Button
+                  data-testid={`purchase-${plan.key}-btn`}
+                  className={`w-full ${plan.popular ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => handlePurchase(plan.key)}
+                  disabled={processingPayment}
+                >
+                  {processingPayment ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Purchase
+                    </>
+                  )}
+                </Button>
+              </div>
             ))}
           </div>
         )}
 
         {/* Features Comparison */}
         <div className="mt-16">
-          <h2 className="text-2xl font-semibold text-center mb-8" style={{ fontFamily: 'Playfair Display' }}>
-            What's Included
+          <h2 className="text-2xl font-semibold text-center text-white mb-8" style={{ fontFamily: 'Playfair Display' }}>
+            What's <span className="text-gradient">Included</span>
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
@@ -214,30 +224,28 @@ const Pricing = () => {
               { title: "Title Chain", desc: "30-year ownership history reconstruction" },
               { title: "PDF Reports", desc: "Lawyer-ready downloadable reports" }
             ].map((item, index) => (
-              <Card key={index} className="card-base">
-                <CardContent className="pt-6">
-                  <h3 className="font-medium mb-2">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
-                </CardContent>
-              </Card>
+              <div key={index} className="glass-card">
+                <h3 className="font-medium text-white mb-2">{item.title}</h3>
+                <p className="text-sm text-slate-400">{item.desc}</p>
+              </div>
             ))}
           </div>
         </div>
 
         {/* Trust Badges */}
         <div className="mt-16 text-center">
-          <p className="text-sm text-muted-foreground mb-4">Trusted by thousands of property buyers across India</p>
-          <div className="flex items-center justify-center gap-8 text-muted-foreground">
+          <p className="text-sm text-slate-500 mb-4">Trusted by thousands of property buyers across India</p>
+          <div className="flex items-center justify-center gap-8 text-slate-400">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
               <span className="text-sm">Secure Payments</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
               <span className="text-sm">256-bit Encryption</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
               <span className="text-sm">DPDP Compliant</span>
             </div>
           </div>
@@ -246,5 +254,16 @@ const Pricing = () => {
     </div>
   );
 };
+
+// Missing import
+const FileText = ({ className }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+    <polyline points="14 2 14 8 20 8"/>
+    <line x1="16" x2="8" y1="13" y2="13"/>
+    <line x1="16" x2="8" y1="17" y2="17"/>
+    <line x1="10" x2="8" y1="9" y2="9"/>
+  </svg>
+);
 
 export default Pricing;
