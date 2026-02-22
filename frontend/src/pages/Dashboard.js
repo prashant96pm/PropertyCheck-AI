@@ -170,6 +170,32 @@ const Dashboard = () => {
           </p>
         </div>
 
+        {/* Quick Search Bar */}
+        <div className="glass-card-blue mb-8">
+          <div className="flex items-center gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+              <input
+                data-testid="dashboard-search-input"
+                type="text"
+                placeholder="Quick search: owner name, survey number, or location..."
+                className="input-glass w-full pl-12 py-3"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && e.target.value.trim()) {
+                    navigate(`/search?q=${encodeURIComponent(e.target.value.trim())}`);
+                  }
+                }}
+              />
+            </div>
+            <Link to="/search">
+              <Button data-testid="dashboard-search-go-btn" className="btn-primary whitespace-nowrap">
+                <Sparkles className="h-4 w-4 mr-2" />
+                AI Search
+              </Button>
+            </Link>
+          </div>
+        </div>
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {loading ? (
