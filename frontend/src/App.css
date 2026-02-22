@@ -1,34 +1,163 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* PropertyCheck AI - Custom Styles */
+
+/* Base styles handled by Tailwind in index.css */
+
+/* Animation utilities */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(14, 165, 233, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
+  }
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
 }
 
-.App-link {
-    color: #61dafb;
+.animate-pulse-ring {
+  animation: pulse-ring 2s infinite;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+/* Risk score gradient background */
+.risk-gradient-high {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.risk-gradient-medium {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.risk-gradient-low {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+}
+
+/* Custom scrollbar for code/OCR preview */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Document dropzone styles */
+.dropzone-active {
+  border-color: #0ea5e9;
+  background-color: rgba(14, 165, 233, 0.05);
+}
+
+/* Print styles for reports */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+  
+  .page-break {
+    page-break-before: always;
+  }
+}
+
+/* Focus ring customization */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--accent));
+}
+
+/* Timeline connector line */
+.timeline-line {
+  position: absolute;
+  left: 1rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, #e2e8f0, #0ea5e9, #e2e8f0);
+}
+
+/* Card hover lift effect */
+.card-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Status indicator pulse */
+.status-pulse {
+  position: relative;
+}
+
+.status-pulse::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  animation: pulse-ring 2s infinite;
+}
+
+/* Mono text styling for legal data */
+.legal-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  letter-spacing: -0.02em;
+}
+
+/* Risk badge animations */
+.risk-badge-safe {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.risk-badge-caution {
+  animation: fadeInUp 0.3s ease-out, pulse-ring 3s infinite;
+}
+
+.risk-badge-danger {
+  animation: fadeInUp 0.3s ease-out, pulse-ring 1.5s infinite;
 }
