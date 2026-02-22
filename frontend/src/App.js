@@ -57,6 +57,11 @@ function AppRouter() {
           <PropertyDetail />
         </ProtectedRoute>
       } />
+      <Route path="/report/:propertyId" element={
+        <ProtectedRoute>
+          <PropertyDetail />
+        </ProtectedRoute>
+      } />
       <Route path="/payment/success" element={
         <ProtectedRoute>
           <PaymentSuccess />
