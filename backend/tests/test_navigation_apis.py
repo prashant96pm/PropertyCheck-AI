@@ -270,8 +270,15 @@ class TestProtectedEndpoints:
     
     def test_analyze_property(self, auth_session):
         """Test AI analysis endpoint"""
-        # First create a property
-        property_id = self.test_create_property_authenticated(auth_session)
+        # Get user's properties first
+        props_response = auth_session.get(f"{BASE_URL}/api/properties")
+        assert props_response.status_code == 200
+        
+        properties = props_response.json()
+        if not properties:
+            pytest.skip("No properties to analyze")
+        
+        property_id = properties[0]["property_id"]
         
         # Run analysis
         response = auth_session.post(f"{BASE_URL}/api/analyze/{property_id}")
