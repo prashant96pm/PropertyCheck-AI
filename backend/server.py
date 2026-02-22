@@ -856,7 +856,8 @@ async def download_report_pdf(property_id: str, user: dict = Depends(get_current
     story.append(Spacer(1, 20))
     
     # Risk Score
-    risk_color = colors.green if report["risk_status"] == "GREEN" else (colors.orange if report["risk_status"] == "YELLOW" else colors.red)
+    # Risk color based on status (used for PDF styling)
+    _ = colors.green if report["risk_status"] == "GREEN" else (colors.orange if report["risk_status"] == "YELLOW" else colors.red)
     story.append(Paragraph(f"Risk Score: {report['risk_score']}/100", styles['Heading3']))
     story.append(Paragraph(f"Status: {report['risk_status']}", styles['Normal']))
     story.append(Paragraph(f"Recommendation: {report['legal_recommendation'].replace('_', ' ')}", styles['Normal']))
