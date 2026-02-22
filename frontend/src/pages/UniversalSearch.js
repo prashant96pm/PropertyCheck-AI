@@ -71,9 +71,40 @@ const UniversalSearch = () => {
   });
 
   useEffect(() => {
-    // Load initial sample data
-    loadSampleProperties();
+    const q = searchParams.get('q');
+    if (q) {
+      setSmartQuery(q);
+      setSearchMode('smart');
+      // Auto-trigger search with query param
+      performSmartSearch(q);
+    } else {
+      loadSampleProperties();
+    }
   }, []);
+
+  const performSmartSearch = async (query) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API}/property/ai-smart-search`, {
+        query
+      }, { withCredentials: true });
+      
+      setResults(response.data.results || []);
+      setTotalResults(response.data.total || 0);
+      setSearchType('ai_smart_search');
+      
+      if (response.data.results?.length === 0) {
+        toast.info('No properties found matching your query');
+      } else {
+        toast.success(`Found ${response.data.total} properties`);
+      }
+    } catch (error) {
+      toast.error('Search failed. Please try again.');
+      loadSampleProperties();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loadSampleProperties = async () => {
     setLoading(true);
