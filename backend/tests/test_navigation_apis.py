@@ -220,19 +220,16 @@ class TestProtectedEndpoints:
     
     @pytest.fixture
     def auth_session(self):
-        """Create authenticated session"""
-        import time
+        """Create authenticated session using existing test user"""
         session = requests.Session()
         
-        # Register new user
-        test_email = f"test_protected_{int(time.time())}@test.com"
+        # Login with existing user
         payload = {
-            "email": test_email,
-            "password": "Test123!@",
-            "name": "Protected Test"
+            "email": "test_nav_1771779964@test.com",
+            "password": "Test123!@"
         }
-        response = session.post(f"{BASE_URL}/api/auth/register", json=payload)
-        assert response.status_code == 200
+        response = session.post(f"{BASE_URL}/api/auth/login", json=payload)
+        assert response.status_code == 200, f"Login failed: {response.text}"
         
         return session
     
