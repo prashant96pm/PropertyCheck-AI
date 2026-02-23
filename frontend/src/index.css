@@ -122,8 +122,8 @@
   }
   
   .btn-primary:hover {
-    box-shadow: 0 0 30px rgba(14, 165, 233, 0.6), 0 0 60px rgba(14, 165, 233, 0.3);
-    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+    transform: translateY(-1px);
   }
   
   .btn-secondary {
@@ -144,13 +144,12 @@
   .fab {
     @apply fixed bottom-8 right-8 z-50 h-16 w-16 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300;
     background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-    box-shadow: 0 0 30px rgba(14, 165, 233, 0.5), 0 8px 32px rgba(0, 0, 0, 0.3);
-    animation: fab-pulse 2s infinite;
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.3), 0 8px 32px rgba(0, 0, 0, 0.3);
   }
   
   .fab:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 50px rgba(14, 165, 233, 0.7), 0 12px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 25px rgba(14, 165, 233, 0.5), 0 12px 40px rgba(0, 0, 0, 0.4);
   }
   
   /* Risk Badges */
@@ -274,22 +273,19 @@
   to { transform: rotate(360deg); }
 }
 
-/* Risk Meter Neon Glow */
+/* Risk Meter Subtle Glow */
 .risk-meter-glow-green {
-  filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.8));
-  animation: risk-breathe 2s infinite;
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
   color: #10b981;
 }
 
 .risk-meter-glow-orange {
-  filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.8));
-  animation: risk-breathe 2s infinite;
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.5));
   color: #f59e0b;
 }
 
 .risk-meter-glow-red {
-  filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.8));
-  animation: risk-breathe 1.5s infinite;
+  filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.5));
   color: #ef4444;
 }
 
