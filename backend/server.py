@@ -1259,10 +1259,14 @@ Return JSON:
         return generate_mock_risk_analysis(property, documents)
 
 def generate_mock_risk_analysis(property: dict, documents: list) -> dict:
-    import random
+    # Generate deterministic score based on property_id so re-analysis gives same result
+    prop_id = property.get("property_id", "unknown")
+    seed_val = sum(ord(c) for c in prop_id)
     
     has_docs = len(documents) > 0
-    risk_score = random.randint(60, 95) if has_docs else random.randint(30, 60)
+    # Deterministic score: base from property_id hash, bonus for documents
+    base_score = 40 + (seed_val % 45)  # Range: 40-84
+    risk_score = min(95, base_score + (15 if has_docs else 0))  # Docs add 15 points
     
     if risk_score >= 75:
         status = "GREEN"
