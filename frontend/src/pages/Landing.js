@@ -31,7 +31,7 @@ const Landing = () => {
       description: "Extract data from Sale Deeds, EC, RTC, Khata documents in multiple Indian languages"
     },
     {
-      icon: <Shield className="h-6 w-6" />,
+      icon: <AlertTriangle className="h-6 w-6" />,
       title: "Fraud Detection",
       description: "Identify double registration, forged documents, and ownership discrepancies"
     },
@@ -98,7 +98,7 @@ const Landing = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-cyan-400" />
+              <Building2 className="h-8 w-8 text-cyan-400" />
               <span className="text-xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
                 PropertyCheck AI
               </span>
@@ -403,7 +403,7 @@ const Landing = () => {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Shield className="h-6 w-6 text-cyan-400" />
+                <Building2 className="h-6 w-6 text-cyan-400" />
                 <span className="text-lg font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
                   PropertyCheck AI
                 </span>
@@ -442,7 +442,7 @@ const Landing = () => {
           </div>
           
           <div className="border-t border-slate-800/50 mt-12 pt-8 text-sm text-center text-slate-500">
-            <p>© 2024 PropertyCheck AI. All rights reserved.</p>
+            <p>© 2026 PropertyCheck AI. All rights reserved.</p>
           </div>
         </div>
       </footer>
