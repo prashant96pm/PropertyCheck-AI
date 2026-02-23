@@ -419,18 +419,18 @@ const Landing = () => {
             <div>
               <h4 className="text-white font-medium mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-slate-500">
+                <li><Link to="/search" className="hover:text-cyan-400 transition-colors">Search Properties</Link></li>
+                <li><Link to="/pricing" className="hover:text-cyan-400 transition-colors">Pricing</Link></li>
                 <li><a href="#features" className="hover:text-cyan-400 transition-colors">Features</a></li>
-                <li><a href="#pricing" className="hover:text-cyan-400 transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">API Access</a></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="text-white font-medium mb-4">Company</h4>
+              <h4 className="text-white font-medium mb-4">Account</h4>
               <ul className="space-y-2 text-sm text-slate-500">
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Careers</a></li>
+                <li><Link to="/register" className="hover:text-cyan-400 transition-colors">Get Started</Link></li>
+                <li><Link to="/login" className="hover:text-cyan-400 transition-colors">Sign In</Link></li>
+                <li><Link to="/dashboard" className="hover:text-cyan-400 transition-colors">Dashboard</Link></li>
               </ul>
             </div>
             
