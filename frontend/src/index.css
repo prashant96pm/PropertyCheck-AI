@@ -83,27 +83,26 @@
   /* Glowing Border Cards */
   .glass-card-green {
     @apply glass-card;
-    border: 1px solid rgba(16, 185, 129, 0.5);
-    box-shadow: var(--glow-green), 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.15), 0 8px 32px rgba(0, 0, 0, 0.3);
   }
   
   .glass-card-orange {
     @apply glass-card;
-    border: 1px solid rgba(245, 158, 11, 0.5);
-    box-shadow: var(--glow-orange), 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.15), 0 8px 32px rgba(0, 0, 0, 0.3);
   }
   
   .glass-card-red {
     @apply glass-card;
-    border: 1px solid rgba(239, 68, 68, 0.5);
-    box-shadow: var(--glow-red), 0 8px 32px rgba(0, 0, 0, 0.3);
-    animation: pulse-red 2s infinite;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.15), 0 8px 32px rgba(0, 0, 0, 0.3);
   }
   
   .glass-card-blue {
     @apply glass-card;
-    border: 1px solid rgba(14, 165, 233, 0.5);
-    box-shadow: var(--glow-blue), 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(14, 165, 233, 0.35);
+    box-shadow: 0 0 12px rgba(14, 165, 233, 0.15), 0 8px 32px rgba(0, 0, 0, 0.3);
   }
   
   /* Glass Header */
