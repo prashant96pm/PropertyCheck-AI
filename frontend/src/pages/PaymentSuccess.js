@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { 
-  Shield, 
+  Building2, 
   CheckCircle2, 
   Loader2,
   ArrowRight
