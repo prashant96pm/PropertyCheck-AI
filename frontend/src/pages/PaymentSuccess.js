@@ -70,7 +70,7 @@ const PaymentSuccess = () => {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
-            <Shield className="h-10 w-10 text-primary" />
+            <Building2 className="h-10 w-10 text-primary" />
             <span className="text-2xl font-semibold text-primary" style={{ fontFamily: 'Playfair Display' }}>
               PropertyCheck AI
             </span>
@@ -122,7 +122,7 @@ const PaymentSuccess = () => {
             {status === 'expired' && (
               <>
                 <div className="h-16 w-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Shield className="h-10 w-10 text-amber-600" />
+                  <Building2 className="h-10 w-10 text-amber-600" />
                 </div>
                 <h2 className="text-2xl font-semibold text-primary mb-2" style={{ fontFamily: 'Playfair Display' }}>
                   Session Expired
@@ -141,7 +141,7 @@ const PaymentSuccess = () => {
             {status === 'timeout' && (
               <>
                 <div className="h-16 w-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Shield className="h-10 w-10 text-amber-600" />
+                  <Building2 className="h-10 w-10 text-amber-600" />
                 </div>
                 <h2 className="text-2xl font-semibold text-primary mb-2" style={{ fontFamily: 'Playfair Display' }}>
                   Verification Timeout

@@ -59,7 +59,7 @@ const Register = () => {
       <div className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-between relative z-10">
         <div>
           <Link to="/" className="inline-flex items-center gap-2 mb-12">
-            <Shield className="h-10 w-10 text-cyan-400" />
+            <Building2 className="h-10 w-10 text-cyan-400" />
             <span className="text-2xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
               PropertyCheck AI
             </span>
@@ -93,7 +93,7 @@ const Register = () => {
           {/* Mobile Logo */}
           <div className="text-center mb-8 lg:hidden">
             <Link to="/" className="inline-flex items-center gap-2">
-              <Shield className="h-10 w-10 text-cyan-400" />
+              <Building2 className="h-10 w-10 text-cyan-400" />
               <span className="text-2xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
                 PropertyCheck AI
               </span>

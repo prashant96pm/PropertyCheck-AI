@@ -39,7 +39,7 @@ const Login = () => {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
-            <Shield className="h-10 w-10 text-cyan-400" />
+            <Building2 className="h-10 w-10 text-cyan-400" />
             <span className="text-2xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
               PropertyCheck AI
             </span>
