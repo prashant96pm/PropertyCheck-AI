@@ -100,7 +100,7 @@ const PropertyProfile = () => {
                 <ArrowLeft className="h-5 w-5" />
               </Link>
               <Link to="/" className="flex items-center gap-2">
-                <Shield className="h-8 w-8 text-cyan-400" />
+                <Building2 className="h-8 w-8 text-cyan-400" />
                 <span className="text-xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
                   PropertyCheck AI
                 </span>

@@ -177,7 +177,7 @@ const UploadProperty = () => {
           <div className="flex justify-between items-center h-16">
             <Link to="/dashboard" className="flex items-center gap-2">
               <ArrowLeft className="h-5 w-5 text-slate-400" />
-              <Shield className="h-8 w-8 text-cyan-400" />
+              <Building2 className="h-8 w-8 text-cyan-400" />
               <span className="text-xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
                 PropertyCheck AI
               </span>
