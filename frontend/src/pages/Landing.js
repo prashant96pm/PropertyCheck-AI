@@ -318,12 +318,15 @@ const Landing = () => {
               </div>
             </div>
             
-            <div className="glass-card-green">
-              <img 
-                src="https://images.pexels.com/photos/7841462/pexels-photo-7841462.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-                alt="Legal Professionals"
-                className="rounded-lg opacity-80"
-              />
+            <div className="glass-card">
+              <div className="grid grid-cols-2 gap-4">
+                {["Sale Deed", "Mother Deed", "EC Certificate", "RTC / Pahani", "7/12 Extract", "Khata Certificate", "Mutation Records", "NOC Documents"].map((doc, index) => (
+                  <div key={index} className="flex items-center gap-2 p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+                    <CheckCircle2 className="h-4 w-4 text-cyan-400 flex-shrink-0" />
+                    <span className="text-sm text-slate-300">{doc}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
