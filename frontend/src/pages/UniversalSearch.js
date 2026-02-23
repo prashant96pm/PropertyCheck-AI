@@ -221,7 +221,7 @@ const UniversalSearch = () => {
                 className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
               >
                 <Sparkles className="h-4 w-4 mr-2" />
-                AI Smart Search
+                Smart Search
               </TabsTrigger>
               <TabsTrigger 
                 value="advanced"
@@ -455,7 +455,7 @@ const UniversalSearch = () => {
             
             {searchType && searchType !== 'sample_registry' && (
               <Badge variant="outline" className="border-cyan-500/30 text-cyan-400">
-                {searchType === 'ai_smart_search' ? 'AI Search' : 'Filtered'}
+                {searchType === 'ai_smart_search' ? 'Smart Search' : 'Filtered'}
               </Badge>
             )}
           </div>

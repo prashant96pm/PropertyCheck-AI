@@ -189,7 +189,7 @@ const Dashboard = () => {
             <Link to="/search">
               <Button data-testid="dashboard-search-go-btn" className="btn-primary whitespace-nowrap">
                 <Sparkles className="h-4 w-4 mr-2" />
-                AI Search
+                Search
               </Button>
             </Link>
           </div>
