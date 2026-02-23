@@ -14,7 +14,6 @@ import {
 } from '../components/ui/select';
 import FloatingActionButton from '../components/FloatingActionButton';
 import { 
-  Shield, 
   Upload, 
   FileText, 
   Loader2, 
@@ -22,7 +21,8 @@ import {
   ArrowLeft,
   X,
   AlertCircle,
-  Sparkles
+  Sparkles,
+  Building2
 } from 'lucide-react';
 import { toast } from 'sonner';
 

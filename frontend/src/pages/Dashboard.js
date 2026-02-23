@@ -15,7 +15,6 @@ import ShimmerLoader from '../components/ShimmerLoader';
 import FloatingActionButton from '../components/FloatingActionButton';
 import RiskMeter from '../components/RiskMeter';
 import { 
-  Shield, 
   Plus, 
   FileText, 
   CheckCircle2, 

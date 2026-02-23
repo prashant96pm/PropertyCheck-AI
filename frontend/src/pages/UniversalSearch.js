@@ -17,7 +17,6 @@ import {
 import ShimmerLoader from '../components/ShimmerLoader';
 import RiskMeter from '../components/RiskMeter';
 import { 
-  Shield, 
   Search, 
   User, 
   MapPin, 

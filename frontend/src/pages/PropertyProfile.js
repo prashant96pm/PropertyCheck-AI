@@ -7,7 +7,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import RiskMeter from '../components/RiskMeter';
 import ShimmerLoader from '../components/ShimmerLoader';
 import { 
-  Shield, 
   ArrowLeft, 
   FileText, 
   AlertTriangle, 

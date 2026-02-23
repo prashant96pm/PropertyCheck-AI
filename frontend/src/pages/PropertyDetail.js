@@ -9,7 +9,6 @@ import RiskMeter from '../components/RiskMeter';
 import ShimmerLoader from '../components/ShimmerLoader';
 import FloatingActionButton from '../components/FloatingActionButton';
 import { 
-  Shield, 
   ArrowLeft, 
   FileText, 
   AlertTriangle, 

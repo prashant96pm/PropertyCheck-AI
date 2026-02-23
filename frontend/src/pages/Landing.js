@@ -5,7 +5,6 @@ import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import RiskMeter from '../components/RiskMeter';
 import { 
-  Shield, 
   FileSearch, 
   AlertTriangle, 
   CheckCircle2, 
@@ -18,7 +17,8 @@ import {
   Zap,
   Lock,
   Globe,
-  Sparkles
+  Sparkles,
+  Search
 } from 'lucide-react';
 
 const Landing = () => {
