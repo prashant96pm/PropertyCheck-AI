@@ -1642,7 +1642,13 @@ async def root():
 
 @api_router.get("/health")
 async def health_check():
-    return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
+    health = {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
+    try:
+        await client.admin.command('ping')
+        health["database"] = "connected"
+    except Exception:
+        health["database"] = "connecting"
+    return health
 
 # Include router
 app.include_router(api_router)
