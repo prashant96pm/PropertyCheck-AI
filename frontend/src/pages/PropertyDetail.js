@@ -629,6 +629,39 @@ const PropertyDetail = () => {
                       </div>
                     </div>
                   )}
+
+                  {/* Government Documents Available for Download */}
+                  <div>
+                    <h4 className="font-medium text-white mb-3">Government Documents</h4>
+                    <p className="text-xs text-slate-500 mb-3">Documents available from government portals (downloadable when live API integration is enabled)</p>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {[
+                        { name: "RTC / Pahani Extract", source: govtRecords?.source || "Land Records Portal" },
+                        { name: "Encumbrance Certificate (EC)", source: "Sub-Registrar Office" },
+                        { name: "Khata Certificate", source: "BBMP / Municipal Records" },
+                        { name: "Mutation Register Extract", source: govtRecords?.source || "Taluk Office" },
+                        { name: "Survey Sketch / Map", source: "Survey Department" },
+                        { name: "CERSAI Report", source: "CERSAI Portal" }
+                      ].map((doc, i) => (
+                        <div key={i} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-cyan-400" />
+                            <div>
+                              <p className="text-sm text-white">{doc.name}</p>
+                              <p className="text-xs text-slate-500">{doc.source}</p>
+                            </div>
+                          </div>
+                          <Button variant="ghost" size="sm" className="text-slate-500 hover:text-cyan-400" disabled>
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-amber-400 mt-3">
+                      <AlertTriangle className="h-3 w-3 inline mr-1" />
+                      Live download requires government API integration (coming soon)
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <div className="text-center py-12">
