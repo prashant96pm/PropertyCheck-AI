@@ -130,8 +130,6 @@ const Dashboard = () => {
                         {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                       </div>
                     )}
-                      </div>
-                    )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-slate-900 border-slate-700">
