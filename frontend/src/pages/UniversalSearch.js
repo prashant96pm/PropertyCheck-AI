@@ -244,7 +244,7 @@ const UniversalSearch = () => {
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
                   <Input
                     data-testid="smart-search-input"
-                    placeholder="e.g., 'Land owned by Ramesh in Bangalore' or 'Survey 123/4 Karnataka'"
+                    placeholder="e.g., 'Land owned by Ramesh in Bengaluru' or 'Survey 123/4 Karnataka'"
                     value={smartQuery}
                     onChange={(e) => setSmartQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSmartSearch()}
@@ -255,10 +255,10 @@ const UniversalSearch = () => {
                 <div className="flex flex-wrap gap-2 text-xs text-slate-500">
                   <span>Try:</span>
                   <button 
-                    onClick={() => setSmartQuery('Properties in Bangalore Urban')}
+                    onClick={() => setSmartQuery('Properties in Bengaluru Urban')}
                     className="text-cyan-400 hover:underline"
                   >
-                    "Properties in Bangalore Urban"
+                    "Properties in Bengaluru Urban"
                   </button>
                   <span>•</span>
                   <button 
@@ -367,7 +367,7 @@ const UniversalSearch = () => {
                 <div className="space-y-2">
                   <Label className="text-slate-300">District</Label>
                   <Input
-                    placeholder="e.g., Bangalore Urban"
+                    placeholder="e.g., Bengaluru Urban"
                     value={advancedFilters.district}
                     onChange={(e) => setAdvancedFilters(prev => ({ ...prev, district: e.target.value }))}
                     className="input-glass"
