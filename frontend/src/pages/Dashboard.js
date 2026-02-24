@@ -335,18 +335,28 @@ const Dashboard = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
-                          {property.risk_score && (
-                            <div className="text-right">
-                              <p className="text-xs text-slate-500">Risk Score</p>
-                              <p className={`font-mono font-bold ${
-                                property.risk_score >= 75 ? 'text-emerald-400' :
+                          {property.risk_score !== undefined && property.risk_score !== null ? (
+                            <div className="text-right min-w-[80px]">
+                              <p className={`font-mono font-bold text-lg ${
+                                property.risk_score >= 100 ? 'text-emerald-400' :
+                                property.risk_score >= 80 ? 'text-emerald-400' :
                                 property.risk_score >= 50 ? 'text-amber-400' : 'text-red-400'
                               }`}>
                                 {property.risk_score}/100
                               </p>
+                              <p className={`text-xs font-semibold ${
+                                property.risk_score >= 100 ? 'text-emerald-400' :
+                                property.risk_score >= 80 ? 'text-emerald-400' :
+                                'text-red-400'
+                              }`}>
+                                {property.risk_score >= 80 ? 'No Risk' : 'High Risk'}
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="text-right min-w-[80px]">
+                              <p className="text-sm text-slate-500">Pending</p>
                             </div>
                           )}
-                          {getRiskBadge(property.risk_status)}
                           <ChevronRight className="h-5 w-5 text-slate-500" />
                         </div>
                       </div>
