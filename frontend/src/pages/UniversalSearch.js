@@ -543,10 +543,15 @@ const UniversalSearch = () => {
                           <div className="text-right">
                             <p className="text-xs text-slate-500">Risk Score</p>
                             <p className={`font-mono font-bold text-lg ${
-                              property.risk_score >= 75 ? 'text-emerald-400' :
+                              property.risk_score >= 80 ? 'text-emerald-400' :
                               property.risk_score >= 50 ? 'text-amber-400' : 'text-red-400'
                             }`}>
                               {property.risk_score}
+                            </p>
+                            <p className={`text-xs font-semibold ${
+                              property.risk_score >= 80 ? 'text-emerald-400' : 'text-red-400'
+                            }`}>
+                              {property.risk_score >= 80 ? 'No Risk' : 'High Risk'}
                             </p>
                           </div>
                         )}
@@ -565,7 +570,7 @@ const UniversalSearch = () => {
               <p className="text-slate-400 mb-6 max-w-md mx-auto">
                 Try adjusting your search criteria or use the AI smart search for natural language queries
               </p>
-              <Button onClick={loadSampleProperties} className="btn-secondary">
+              <Button data-testid="view-sample-registry-btn" onClick={loadSampleProperties} className="btn-secondary">
                 View Sample Registry
               </Button>
             </div>
