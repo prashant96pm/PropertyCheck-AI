@@ -14,6 +14,11 @@ import Pricing from './pages/Pricing';
 import PaymentSuccess from './pages/PaymentSuccess';
 import UniversalSearch from './pages/UniversalSearch';
 import PropertyProfile from './pages/PropertyProfile';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import DPDPCompliance from './pages/DPDPCompliance';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -39,6 +44,9 @@ function AppRouter() {
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/search" element={<UniversalSearch />} />
       <Route path="/property-profile/:propertyId" element={<PropertyProfile />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
+      <Route path="/dpdp-compliance" element={<DPDPCompliance />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       
       {/* Protected routes */}
@@ -60,6 +68,16 @@ function AppRouter() {
       <Route path="/report/:propertyId" element={
         <ProtectedRoute>
           <PropertyDetail />
+        </ProtectedRoute>
+      } />
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+      } />
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          <Settings />
         </ProtectedRoute>
       } />
       <Route path="/payment/success" element={
