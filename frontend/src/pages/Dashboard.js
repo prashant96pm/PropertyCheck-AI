@@ -138,11 +138,11 @@ const Dashboard = () => {
                     <p className="text-xs text-slate-400">{user?.email}</p>
                   </div>
                   <DropdownMenuSeparator className="bg-slate-700" />
-                  <DropdownMenuItem data-testid="profile-menu-item" className="text-slate-300 hover:text-white hover:bg-slate-800">
+                  <DropdownMenuItem data-testid="profile-menu-item" className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" onClick={() => navigate('/profile')}>
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem data-testid="settings-menu-item" className="text-slate-300 hover:text-white hover:bg-slate-800">
+                  <DropdownMenuItem data-testid="settings-menu-item" className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" onClick={() => navigate('/settings')}>
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
                   </DropdownMenuItem>
