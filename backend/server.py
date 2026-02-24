@@ -649,11 +649,15 @@ def parse_query_fallback(query: str) -> dict:
             break
     
     # District/city detection (common ones)
-    cities = ["bangalore", "mumbai", "hyderabad", "chennai", "pune", "ahmedabad", 
-              "delhi", "kolkata", "jaipur", "lucknow"]
-    for city in cities:
-        if city in query_lower:
-            params["district"] = city.title()
+    cities = {
+        "bengaluru": "Bengaluru Urban", "bangalore": "Bengaluru Urban",
+        "mumbai": "Mumbai", "hyderabad": "Hyderabad", "chennai": "Chennai",
+        "pune": "Pune", "ahmedabad": "Ahmedabad", "delhi": "Delhi",
+        "kolkata": "Kolkata", "jaipur": "Jaipur", "lucknow": "Lucknow"
+    }
+    for city_key, city_val in cities.items():
+        if city_key in query_lower:
+            params["district"] = city_val
             break
     
     # Owner name - extract names (simplified)
