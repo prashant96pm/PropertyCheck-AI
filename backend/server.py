@@ -953,7 +953,7 @@ async def seed_sample_property_registry():
             "father_name": "Late Suresh Kumar",
             "state": "Karnataka",
             "district": "Bengaluru Urban",
-            "village": "Sarjapur",
+            "taluk": "Anekal",
             "extent": "2 Acres 30 Guntas",
             "land_type": "Agricultural",
             "risk_status": "GREEN",
