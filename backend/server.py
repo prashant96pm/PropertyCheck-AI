@@ -569,7 +569,7 @@ async def ai_smart_search(search_query: SmartSearchQuery, request: Request):
         }}
         
         Examples:
-        "Land owned by Ramesh in Bangalore" -> {{"owner_name": "Ramesh", "district": "Bangalore", ...}}
+        "Land owned by Ramesh in Bengaluru" -> {{"owner_name": "Ramesh", "district": "Bengaluru Urban", ...}}
         "Survey 123/4 Karnataka" -> {{"survey_no": "123/4", "state": "Karnataka", ...}}
         """
         
