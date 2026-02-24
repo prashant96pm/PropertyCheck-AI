@@ -1649,6 +1649,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup_db_client():
+    try:
+        await client.admin.command('ping')
+        logger.info("MongoDB connection verified successfully")
+    except Exception as e:
+        logger.warning(f"MongoDB initial ping failed (will retry on demand): {e}")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
