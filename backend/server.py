@@ -968,7 +968,7 @@ async def seed_sample_property_registry():
             "owner_name": "Priya Sharma",
             "father_name": "Mohan Sharma",
             "state": "Karnataka",
-            "district": "Bangalore Urban",
+            "district": "Bengaluru Urban",
             "taluk": "Whitefield",
             "village": "Varthur",
             "extent": "1200 Sq Ft",
