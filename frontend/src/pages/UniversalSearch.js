@@ -458,11 +458,18 @@ const UniversalSearch = () => {
               </span>
             </h2>
             
-            {searchType && searchType !== 'sample_registry' && (
-              <Badge variant="outline" className="border-cyan-500/30 text-cyan-400">
-                {searchType === 'ai_smart_search' ? 'Smart Search' : 'Filtered'}
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              {searchType === 'sample_registry' && (
+                <Badge variant="outline" className="border-amber-500/30 text-amber-400">
+                  Sample - Review Only
+                </Badge>
+              )}
+              {searchType && searchType !== 'sample_registry' && (
+                <Badge variant="outline" className="border-cyan-500/30 text-cyan-400">
+                  {searchType === 'ai_smart_search' ? 'Smart Search' : 'Filtered'}
+                </Badge>
+              )}
+            </div>
           </div>
           
           {loading ? (
