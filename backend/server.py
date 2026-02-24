@@ -618,6 +618,17 @@ async def ai_smart_search(search_query: SmartSearchQuery, request: Request):
         
         all_results = sorted(filtered, key=lambda x: x.get("match_confidence", 0), reverse=True)
     
+    # If no results, return sample registry with a note
+    if not all_results:
+        sample_results = await get_sample_property_registry(10)
+        return {
+            "query_parsed": parsed_params,
+            "results": sample_results,
+            "total": len(sample_results),
+            "search_type": "ai_smart_search",
+            "note": "No exact matches found. Showing sample properties for review."
+        }
+    
     return {
         "query_parsed": parsed_params,
         "results": all_results[:20],
