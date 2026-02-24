@@ -1093,8 +1093,15 @@ async def upload_document(
     
     try:
         if file_ext.lower() in ["png", "jpg", "jpeg", "tiff", "bmp"]:
-            img = Image.open(file_path)
-            ocr_text = pytesseract.image_to_string(img, lang='eng+kan+hin+tel+tam')
+            if TESSERACT_AVAILABLE:
+                try:
+                    img = Image.open(file_path)
+                    ocr_text = pytesseract.image_to_string(img, lang='eng+kan+hin+tel+tam')
+                except Exception as ocr_err:
+                    logger.warning(f"OCR failed (tesseract may not be installed): {ocr_err}")
+                    ocr_text = "OCR processing unavailable - tesseract not installed in this environment"
+            else:
+                ocr_text = "OCR processing unavailable - tesseract not installed in this environment"
         elif file_ext.lower() == "pdf":
             try:
                 import PyPDF2
