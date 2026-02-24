@@ -1571,6 +1571,47 @@ async def get_dashboard_stats(user: dict = Depends(get_current_user)):
         "recent_properties": recent_properties
     }
 
+# ==================== USER PROFILE ====================
+
+@api_router.get("/profile")
+async def get_profile(user: dict = Depends(get_current_user)):
+    user_doc = await db.users.find_one({"user_id": user["user_id"]}, {"_id": 0})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "user_id": user_doc.get("user_id"),
+        "first_name": user_doc.get("first_name", user_doc.get("name", "").split(" ")[0] if user_doc.get("name") else ""),
+        "last_name": user_doc.get("last_name", " ".join(user_doc.get("name", "").split(" ")[1:]) if user_doc.get("name") else ""),
+        "email": user_doc.get("email"),
+        "gender": user_doc.get("gender", ""),
+        "date_joined": user_doc.get("created_at", ""),
+        "picture": user_doc.get("picture", ""),
+        "auth_provider": user_doc.get("auth_provider", "email"),
+    }
+
+@api_router.put("/profile")
+async def update_profile(request: Request, user: dict = Depends(get_current_user)):
+    body = await request.json()
+    update_fields = {}
+    if "first_name" in body:
+        update_fields["first_name"] = body["first_name"]
+    if "last_name" in body:
+        update_fields["last_name"] = body["last_name"]
+    if "gender" in body:
+        update_fields["gender"] = body["gender"]
+    if update_fields:
+        # Also update the combined name field
+        if "first_name" in update_fields or "last_name" in update_fields:
+            current = await db.users.find_one({"user_id": user["user_id"]}, {"_id": 0})
+            fn = update_fields.get("first_name", current.get("first_name", ""))
+            ln = update_fields.get("last_name", current.get("last_name", ""))
+            update_fields["name"] = f"{fn} {ln}".strip()
+        await db.users.update_one(
+            {"user_id": user["user_id"]},
+            {"$set": update_fields}
+        )
+    return {"message": "Profile updated successfully"}
+
 # ==================== BASIC ROUTES ====================
 
 @api_router.get("/")
