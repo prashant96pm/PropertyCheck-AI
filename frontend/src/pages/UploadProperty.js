@@ -271,7 +271,7 @@ const UploadProperty = () => {
                     data-testid="district-input"
                     value={propertyForm.district}
                     onChange={(e) => setPropertyForm(prev => ({ ...prev, district: e.target.value }))}
-                    placeholder="e.g., Bangalore Urban"
+                    placeholder="e.g., Bengaluru Urban"
                     className="input-glass"
                     required
                   />
