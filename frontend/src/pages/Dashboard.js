@@ -122,12 +122,14 @@ const Dashboard = () => {
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button data-testid="user-menu-btn" variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Button data-testid="user-menu-btn" variant="ghost" className="relative h-10 w-10 rounded-full p-0">
                     {user?.picture ? (
                       <img src={user.picture} alt={user.name} className="h-10 w-10 rounded-full" />
                     ) : (
-                      <div className="h-10 w-10 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center border border-cyan-500/30">
-                        {user?.name?.charAt(0) || 'U'}
+                      <div className="h-10 w-10 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-bold border-2 border-cyan-500/40">
+                        {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                      </div>
+                    )}
                       </div>
                     )}
                   </Button>
