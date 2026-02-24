@@ -22,7 +22,12 @@ from rapidfuzz import fuzz, process
 
 # PDF and Image processing
 from PIL import Image
-import pytesseract
+try:
+    import pytesseract
+    TESSERACT_AVAILABLE = True
+except Exception:
+    TESSERACT_AVAILABLE = False
+
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
@@ -38,10 +43,24 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage, FileContentWithM
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# Configure logging first
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# MongoDB connection with Atlas support
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+db_name = os.environ.get('DB_NAME', 'propertycheck')
+
+# Add connection params for Atlas MongoDB (TLS, timeouts, retries)
+client = AsyncIOMotorClient(
+    mongo_url,
+    serverSelectionTimeoutMS=10000,
+    connectTimeoutMS=10000,
+    socketTimeoutMS=20000,
+    retryWrites=True,
+    retryReads=True,
+)
+db = client[db_name]
 
 # JWT Configuration
 JWT_SECRET = os.environ.get('JWT_SECRET_KEY', 'propertycheck-default-secret')
@@ -56,10 +75,6 @@ DATA_GOV_API_KEY = os.environ.get('DATA_GOV_API_KEY')
 # Create the main app
 app = FastAPI(title="PropertyCheck AI API")
 api_router = APIRouter(prefix="/api")
-
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 # Ensure directories exist
 UPLOAD_DIR = ROOT_DIR / "uploads"
