@@ -103,7 +103,7 @@ async def get_property_valuation(property_id: str, request: Request):
     district = prop.get("district", "Bengaluru Urban")
     s = sum(ord(c) for c in property_id)
     base = 3500000 + (s % 5000000)
-    fmt = lambda v: f"Rs.{v/100000:.1f} Lakhs" if v < 10000000 else f"Rs.{v/10000000:.2f} Cr"
+    def fmt(v): return f"Rs.{v/100000:.1f} Lakhs" if v < 10000000 else f"Rs.{v/10000000:.2f} Cr"
     return {
         "property_id": property_id,
         "estimated_value": {"amount": base, "currency": "INR", "formatted": fmt(base), "confidence": "MEDIUM", "valuation_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"), "methodology": "Comparable Sales + Government Guideline Value"},

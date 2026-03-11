@@ -157,14 +157,6 @@ from fastapi import HTTPException
 
 @router.get("/property/documents/{property_id}")
 async def get_property_documents(property_id: str, request: Request):
-    """Get all documents for a property including registry documents"""
-    from utils.auth import get_current_user
-    user = None
-    try:
-        user = await get_current_user(request)
-    except Exception:
-        pass
-
     user_docs = await db.documents.find({"property_id": property_id}, {"_id": 0}).to_list(50)
     registry_docs = [
         {"doc_type": "encumbrance_certificate", "doc_name": "Encumbrance Certificate (EC)", "source": "Sub-Registrar Office", "date_range": "1995-2024", "is_available": True, "status": "Available for download"},

@@ -5,7 +5,7 @@ Build a production-grade SaaS application called **PropertyCheck AI** — an AI-
 
 ## Tech Stack
 - **Frontend**: React + TailwindCSS + ShadCN UI (Glassmorphism dark theme)
-- **Backend**: FastAPI (Python)
+- **Backend**: FastAPI (Python) - Modular APIRouter architecture
 - **Database**: MongoDB (Atlas-ready)
 - **AI/ML**: Gemini via Emergent LLM Key, Tesseract OCR
 - **Auth**: JWT + Google OAuth (Emergent-managed)
@@ -37,6 +37,34 @@ Build a production-grade SaaS application called **PropertyCheck AI** — an AI-
 - [x] Bengaluru (not Bangalore), risk labels (No Risk/High Risk)
 - [x] Shared report page for public access
 
+### P1 - Backend Refactor (COMPLETE - Mar 2026)
+- [x] **Modular Architecture**: Broke down 2000-line monolithic server.py into 8 route modules
+- [x] **Route Modules**: auth.py, properties.py, search.py, intelligence.py, reports.py, payments.py, admin.py, enterprise.py
+- [x] **Shared Config**: config.py (DB, JWT, API keys, directories)
+- [x] **Auth Utilities**: utils/auth.py (hash_password, verify_password, create_jwt_token, get_current_user)
+- [x] **Pydantic Models**: models/schemas.py (UserCreate, UserLogin, TokenResponse, PropertyCreate, etc.)
+- [x] **Thin Entry Point**: app.py imports and mounts all routers with /api prefix
+- [x] **Zero Regressions**: All 36 API endpoints tested and passing (iteration_6.json)
+
+## Architecture
+
+```
+/app/backend/
+  app.py              # Entry point - imports all routers
+  config.py           # Shared config (DB, JWT, API keys)
+  models/schemas.py   # Pydantic models
+  utils/auth.py       # Auth helpers
+  routes/
+    auth.py           # Auth, profile, dashboard
+    properties.py     # Property CRUD, document upload
+    search.py         # Search, full-profile, ownership, legal records
+    intelligence.py   # Title chain, legal copilot, valuation, govt sources
+    reports.py        # Risk analysis, PDF reports, sharing
+    payments.py       # Pricing, Stripe checkout
+    admin.py          # Admin panel (role-gated)
+    enterprise.py     # Enterprise API (API key auth)
+```
+
 ## Routes
 | Route | Page | Auth |
 |-------|------|------|
@@ -60,31 +88,29 @@ Build a production-grade SaaS application called **PropertyCheck AI** — an AI-
 - Search: multi-param search, AI smart search, full-profile
 - Social: shared reports (create + public access)
 - Profile: get + update
+- Admin: stats, users, role management, verifications
+- Enterprise: API key management, verify, title-history, risk-score
 
 ## Prioritized Backlog
 
-### P1 - Stability
-- [ ] Backend refactor into modular APIRouters
-- [ ] MongoDB schema cleanup
-- [ ] Light mode theme
-
-### P2 - Strategic
-- [ ] Live government API integration
-- [ ] Map integration (Mapbox/Google Maps)
-- [ ] AI Fraud Detection Engine
-- [ ] Payment activation (Razorpay/Stripe)
-- [ ] Property Knowledge Graph (Neo4j-style)
-- [ ] Enterprise API Layer
-- [ ] Admin Panel
+### P2 - Strategic (Next)
+- [ ] Property Knowledge Graph (D3.js/React visualization)
+- [ ] Map integration (Leaflet.js - user's choice)
+- [ ] Enterprise API Layer (documented REST APIs with API key auth)
+- [ ] Admin Panel (accessible from dashboard for admin-role users)
 
 ### P3 - Future
-- [ ] D3.js title chain visualization
-- [ ] Celery + Redis background jobs
-- [ ] Mobile app (Flutter)
-- [ ] Elasticsearch, PostgreSQL + PostGIS
+- [ ] D3.js Title Chain Visualization enhancements
+- [ ] Background Jobs (async processing simulation)
+- [ ] Mobile Responsiveness
+- [ ] Live Government API Integration
+- [ ] Payment activation (Razorpay/Stripe)
+- [ ] AI Fraud Detection Engine
+- [ ] Light mode theme
 
 ## Test Reports
 - iteration_1-2.json: MVP
 - iteration_3.json: Navigation & Search (100%)
 - iteration_4.json: UI/UX Fixes (94-95%)
 - iteration_5.json: Property Intelligence P0 (100% backend + frontend)
+- iteration_6.json: Backend Refactor P1 (100% - 36/36 tests passed)
