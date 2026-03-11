@@ -39,10 +39,22 @@ const PropertyProfile = () => {
   
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [titleChain, setTitleChain] = useState(null);
+  const [valuation, setValuation] = useState(null);
 
   useEffect(() => {
     fetchPropertyProfile();
+    fetchIntelligence();
   }, [propertyId]);
+
+  const fetchIntelligence = async () => {
+    const [chainRes, valRes] = await Promise.allSettled([
+      axios.get(`${API}/property/${propertyId}/title-chain`, { withCredentials: true }),
+      axios.get(`${API}/property/${propertyId}/valuation`, { withCredentials: true }),
+    ]);
+    if (chainRes.status === 'fulfilled') setTitleChain(chainRes.value.data);
+    if (valRes.status === 'fulfilled') setValuation(valRes.value.data);
+  };
 
   const fetchPropertyProfile = async () => {
     try {
@@ -196,6 +208,10 @@ const PropertyProfile = () => {
             <TabsTrigger value="govt" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
               <Landmark className="h-4 w-4 mr-2" />
               Govt Records
+            </TabsTrigger>
+            <TabsTrigger value="valuation" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+              <Scale className="h-4 w-4 mr-2" />
+              Valuation
             </TabsTrigger>
           </TabsList>
 
@@ -623,6 +639,53 @@ const PropertyProfile = () => {
                 </div>
               )}
             </div>
+          </TabsContent>
+
+          {/* Valuation Tab */}
+          <TabsContent value="valuation">
+            {valuation ? (
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="glass-card text-center">
+                    <p className="text-sm text-slate-400 mb-1">Estimated Value</p>
+                    <p className="text-2xl font-bold text-cyan-400">{valuation.estimated_value.formatted}</p>
+                    <Badge className="mt-2 bg-cyan-500/20 text-cyan-400">{valuation.estimated_value.confidence}</Badge>
+                  </div>
+                  <div className="glass-card text-center">
+                    <p className="text-sm text-slate-400 mb-1">Guideline Value</p>
+                    <p className="text-xl font-bold text-white">{valuation.guideline_value.formatted}</p>
+                    <p className="text-xs text-slate-500 mt-1">{valuation.guideline_value.source}</p>
+                  </div>
+                  <div className="glass-card text-center">
+                    <p className="text-sm text-slate-400 mb-1">Appreciation</p>
+                    <p className="text-xl font-bold text-emerald-400">{valuation.price_trends.annual_appreciation}</p>
+                    <Badge className="mt-2 bg-emerald-500/20 text-emerald-400">{valuation.price_trends.trend}</Badge>
+                  </div>
+                </div>
+                <div className="glass-card">
+                  <h4 className="text-base font-semibold text-white mb-4">Nearby Infrastructure</h4>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    {Object.entries(valuation.infrastructure).map(([k, v]) => (
+                      <div key={k} className="flex items-center justify-between p-2 border-b border-slate-700/30">
+                        <div><p className="text-sm text-white">{v.name}</p><p className="text-xs text-slate-500 capitalize">{k.replace('_', ' ')}</p></div>
+                        <span className="text-sm text-cyan-400">{v.distance}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="glass-card">
+                  <h4 className="text-base font-semibold text-white mb-4">Recent Transactions Nearby</h4>
+                  {valuation.nearby_transactions.map((tx, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 mb-2 bg-slate-800/50 rounded-lg">
+                      <div><p className="text-sm text-white">{tx.address}</p><p className="text-xs text-slate-500">{tx.date}</p></div>
+                      <span className="text-sm font-bold text-emerald-400">{tx.amount}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="glass-card text-center py-12"><Loader2 className="h-8 w-8 animate-spin text-cyan-400 mx-auto" /><p className="text-sm text-slate-400 mt-4">Loading valuation...</p></div>
+            )}
           </TabsContent>
         </Tabs>
       </main>

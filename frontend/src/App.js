@@ -19,6 +19,7 @@ import Settings from './pages/Settings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import DPDPCompliance from './pages/DPDPCompliance';
+import SharedReport from './pages/SharedReport';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -47,6 +48,7 @@ function AppRouter() {
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-of-service" element={<TermsOfService />} />
       <Route path="/dpdp-compliance" element={<DPDPCompliance />} />
+      <Route path="/shared-report/:shareToken" element={<SharedReport />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       
       {/* Protected routes */}
