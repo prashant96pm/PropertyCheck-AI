@@ -16,6 +16,9 @@ import { toast } from 'sonner';
 import RiskMeter from '../components/RiskMeter';
 import KnowledgeGraph from '../components/KnowledgeGraph';
 import PropertyMap from '../components/PropertyMap';
+import TitleChainVisualization from '../components/TitleChainVisualization';
+import BackgroundJobs from '../components/BackgroundJobs';
+import LandRegistries from '../components/LandRegistries';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -217,8 +220,10 @@ const PropertyIntelligence = () => {
               { v: 'valuation', l: 'Valuation', i: IndianRupee },
               { v: 'documents', l: 'Documents', i: FileText },
               { v: 'government', l: 'Govt Sources', i: Globe },
+              { v: 'registries', l: 'Land Records', i: Landmark },
               { v: 'graph', l: 'Knowledge Graph', i: Globe },
               { v: 'map', l: 'Map', i: MapPin },
+              { v: 'jobs', l: 'Jobs', i: Clock },
             ].map(t => (
               <TabsTrigger key={t.v} value={t.v} className="flex-1 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 text-xs sm:text-sm" data-testid={`tab-${t.v}`}>
                 <t.i className="h-3.5 w-3.5 mr-1.5 hidden sm:inline" />{t.l}
@@ -304,6 +309,11 @@ const PropertyIntelligence = () => {
                 )}
               </div>
 
+              {/* D3 Interactive Timeline */}
+              {titleChain && <TitleChainVisualization titleChain={titleChain} />}
+
+              {/* Timeline List */}
+              <div className="mt-6">
               {titleChain?.chain?.map((entry, i) => (
                 <div key={i} className="relative pl-8 pb-8 last:pb-0">
                   <div className="absolute left-3 top-2 bottom-0 w-px bg-slate-700" />
@@ -330,6 +340,7 @@ const PropertyIntelligence = () => {
                   </div>
                 </div>
               ))}
+              </div>
 
               {titleChain?.gaps?.length > 0 && (
                 <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
@@ -674,6 +685,28 @@ const PropertyIntelligence = () => {
               </h3>
               <p className="text-xs text-slate-500 mb-4">Property location with nearby infrastructure markers</p>
               <PropertyMap property={property} valuation={valuation} />
+            </div>
+          </TabsContent>
+
+          {/* LAND REGISTRIES TAB */}
+          <TabsContent value="registries">
+            <div className="glass-card">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Landmark className="h-5 w-5 text-cyan-400" />State Land Record Databases
+              </h3>
+              <p className="text-xs text-slate-500 mb-4">Comprehensive directory of digital land registries across all Indian states</p>
+              <LandRegistries propertyId={propertyId} />
+            </div>
+          </TabsContent>
+
+          {/* BACKGROUND JOBS TAB */}
+          <TabsContent value="jobs">
+            <div className="glass-card">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Clock className="h-5 w-5 text-cyan-400" />Background Processing Jobs
+              </h3>
+              <p className="text-xs text-slate-500 mb-4">Submit and track async processing tasks for this property</p>
+              <BackgroundJobs propertyId={propertyId} />
             </div>
           </TabsContent>
         </Tabs>

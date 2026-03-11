@@ -26,6 +26,7 @@ from routes.reports import router as reports_router
 from routes.payments import router as payments_router
 from routes.admin import router as admin_router
 from routes.enterprise import router as enterprise_router
+from routes.jobs import router as jobs_router
 
 app.include_router(auth_router, prefix="/api")
 app.include_router(properties_router, prefix="/api")
@@ -35,6 +36,7 @@ app.include_router(reports_router, prefix="/api")
 app.include_router(payments_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 app.include_router(enterprise_router, prefix="/api")
+app.include_router(jobs_router, prefix="/api")
 
 # Health & root
 from datetime import datetime, timezone

@@ -340,3 +340,99 @@
     linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
 }
+
+
+/* ========= MOBILE RESPONSIVENESS ========= */
+
+/* Mobile Navigation */
+@media (max-width: 768px) {
+  .glass-header .max-w-7xl {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Stack tab triggers vertically on small screens */
+  [role="tablist"] {
+    flex-wrap: wrap !important;
+    gap: 0.25rem !important;
+  }
+
+  [role="tablist"] > * {
+    flex: 0 0 auto !important;
+    min-width: fit-content;
+    font-size: 0.7rem !important;
+    padding: 0.4rem 0.6rem !important;
+  }
+
+  /* Cards spacing */
+  .glass-card,
+  .glass-card-blue,
+  .glass-card-green,
+  .glass-card-orange {
+    padding: 1rem;
+  }
+
+  /* Reduce heading sizes */
+  h1 { font-size: 1.5rem !important; }
+  h2 { font-size: 1.1rem !important; }
+  h3 { font-size: 1rem !important; }
+
+  /* Tables */
+  table {
+    font-size: 0.75rem;
+  }
+
+  /* Grid adjustments */
+  .grid-cols-2 { grid-template-columns: 1fr !important; }
+
+  /* Map height */
+  .leaflet-container {
+    height: 280px !important;
+  }
+
+  /* Knowledge graph */
+  svg { max-width: 100%; height: auto; }
+}
+
+@media (max-width: 640px) {
+  /* Extra small screens */
+  .max-w-7xl, .max-w-6xl, .max-w-5xl {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  /* Hide text on very small screens, keep icons */
+  [role="tablist"] > * {
+    font-size: 0.65rem !important;
+    padding: 0.35rem 0.5rem !important;
+  }
+
+  /* Price text */
+  .text-4xl { font-size: 1.75rem !important; }
+  .text-3xl { font-size: 1.4rem !important; }
+  .text-2xl { font-size: 1.2rem !important; }
+
+  /* Button touch targets */
+  button, .btn-primary, .btn-secondary {
+    min-height: 40px;
+  }
+}
+
+/* Tablet-specific */
+@media (min-width: 769px) and (max-width: 1024px) {
+  [role="tablist"] > * {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Touch-friendly dropdown */
+@media (hover: none) and (pointer: coarse) {
+  .glass-card:hover {
+    transform: none !important;
+  }
+
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

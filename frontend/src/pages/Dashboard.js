@@ -14,6 +14,7 @@ import {
 import ShimmerLoader from '../components/ShimmerLoader';
 import FloatingActionButton from '../components/FloatingActionButton';
 import RiskMeter from '../components/RiskMeter';
+import MobileNav from '../components/MobileNav';
 import { 
   Plus, 
   FileText, 
@@ -109,19 +110,20 @@ const Dashboard = () => {
             </Link>
             
             <div className="flex items-center gap-4">
-              <Link to="/search">
+              <Link to="/search" className="hidden md:block">
                 <Button data-testid="nav-search-btn" className="btn-secondary">
                   <Search className="h-4 w-4 mr-2" />
                   Search
                 </Button>
               </Link>
-              <Link to="/upload">
+              <Link to="/upload" className="hidden md:block">
                 <Button data-testid="new-property-btn" className="btn-primary">
                   <Plus className="h-4 w-4 mr-2" />
                   New Property
                 </Button>
               </Link>
               
+              <div className="hidden md:block">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button data-testid="user-menu-btn" variant="ghost" className="relative h-10 w-10 rounded-full p-0">
@@ -165,6 +167,8 @@ const Dashboard = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              </div>
+              <MobileNav />
             </div>
           </div>
         </div>

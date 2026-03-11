@@ -3,7 +3,6 @@ import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
 import { 
   Building2, 
   CheckCircle2, 
@@ -65,27 +64,27 @@ const PaymentSuccess = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 noise-texture flex items-center justify-center p-4">
+    <div className="min-h-screen gradient-bg flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
-            <Building2 className="h-10 w-10 text-primary" />
-            <span className="text-2xl font-semibold text-primary" style={{ fontFamily: 'Playfair Display' }}>
+            <Building2 className="h-10 w-10 text-cyan-400" />
+            <span className="text-2xl font-semibold text-white" style={{ fontFamily: 'Playfair Display' }}>
               PropertyCheck AI
             </span>
           </Link>
         </div>
 
-        <Card className="card-base shadow-lg">
-          <CardContent className="pt-8 pb-8 text-center">
+        <div className="glass-card">
+          <div className="pt-4 pb-4 text-center">
             {status === 'checking' && (
               <>
-                <Loader2 className="h-16 w-16 text-accent mx-auto mb-6 animate-spin" />
-                <h2 className="text-2xl font-semibold text-primary mb-2" style={{ fontFamily: 'Playfair Display' }}>
+                <Loader2 className="h-16 w-16 text-cyan-400 mx-auto mb-6 animate-spin" />
+                <h2 className="text-2xl font-semibold text-white mb-2" style={{ fontFamily: 'Playfair Display' }}>
                   Verifying Payment
                 </h2>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-slate-400 mb-6">
                   Please wait while we confirm your payment...
                 </p>
               </>
@@ -93,20 +92,20 @@ const PaymentSuccess = () => {
 
             {status === 'success' && (
               <>
-                <div className="h-16 w-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle2 className="h-10 w-10 text-emerald-600" />
+                <div className="h-16 w-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle2 className="h-10 w-10 text-emerald-400" />
                 </div>
-                <h2 className="text-2xl font-semibold text-primary mb-2" style={{ fontFamily: 'Playfair Display' }}>
+                <h2 className="text-2xl font-semibold text-white mb-2" style={{ fontFamily: 'Playfair Display' }}>
                   Payment Successful!
                 </h2>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-slate-400 mb-6">
                   Your property verification report is now available.
                 </p>
                 {paymentDetails && (
-                  <div className="bg-slate-50 p-4 rounded-sm mb-6 text-left">
-                    <p className="text-sm text-muted-foreground">Amount Paid</p>
-                    <p className="font-mono font-bold text-lg">
-                      ${(paymentDetails.amount_total / 100).toFixed(2)} {paymentDetails.currency?.toUpperCase()}
+                  <div className="bg-slate-800/50 p-4 rounded-lg mb-6 text-left border border-slate-700/50">
+                    <p className="text-sm text-slate-400">Amount Paid</p>
+                    <p className="font-mono font-bold text-lg text-white">
+                      {paymentDetails.currency?.toUpperCase() === 'INR' ? '₹' : '$'}{(paymentDetails.amount_total / 100).toFixed(2)} {paymentDetails.currency?.toUpperCase()}
                     </p>
                   </div>
                 )}
@@ -121,43 +120,39 @@ const PaymentSuccess = () => {
 
             {status === 'expired' && (
               <>
-                <div className="h-16 w-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Building2 className="h-10 w-10 text-amber-600" />
+                <div className="h-16 w-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Building2 className="h-10 w-10 text-amber-400" />
                 </div>
-                <h2 className="text-2xl font-semibold text-primary mb-2" style={{ fontFamily: 'Playfair Display' }}>
+                <h2 className="text-2xl font-semibold text-white mb-2" style={{ fontFamily: 'Playfair Display' }}>
                   Session Expired
                 </h2>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-slate-400 mb-6">
                   Your payment session has expired. Please try again.
                 </p>
                 <Link to="/pricing">
-                  <Button className="w-full btn-primary">
-                    Try Again
-                  </Button>
+                  <Button className="w-full btn-primary">Try Again</Button>
                 </Link>
               </>
             )}
 
             {status === 'timeout' && (
               <>
-                <div className="h-16 w-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Building2 className="h-10 w-10 text-amber-600" />
+                <div className="h-16 w-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Building2 className="h-10 w-10 text-amber-400" />
                 </div>
-                <h2 className="text-2xl font-semibold text-primary mb-2" style={{ fontFamily: 'Playfair Display' }}>
+                <h2 className="text-2xl font-semibold text-white mb-2" style={{ fontFamily: 'Playfair Display' }}>
                   Verification Timeout
                 </h2>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-slate-400 mb-6">
                   We couldn't verify your payment. Please contact support if you were charged.
                 </p>
                 <Link to="/dashboard">
-                  <Button className="w-full btn-secondary">
-                    Go to Dashboard
-                  </Button>
+                  <Button className="w-full btn-secondary">Go to Dashboard</Button>
                 </Link>
               </>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

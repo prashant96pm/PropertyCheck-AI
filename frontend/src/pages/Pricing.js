@@ -26,6 +26,7 @@ const Pricing = () => {
   const [pricing, setPricing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('stripe');
 
   const propertyId = searchParams.get('property_id');
 
@@ -65,12 +66,49 @@ const Pricing = () => {
         {
           property_id: propertyId,
           package_type: packageType,
-          origin_url: window.location.origin
+          origin_url: window.location.origin,
+          payment_method: paymentMethod,
         },
         { withCredentials: true }
       );
 
-      window.location.href = response.data.checkout_url;
+      if (paymentMethod === 'razorpay' && response.data.order_id) {
+        // Razorpay inline checkout
+        const options = {
+          key: response.data.razorpay_key_id,
+          amount: response.data.amount,
+          currency: response.data.currency,
+          name: 'PropertyCheck AI',
+          description: `${packageType} Verification Package`,
+          order_id: response.data.order_id,
+          handler: async function (rzpResponse) {
+            try {
+              await axios.post(`${API}/payments/razorpay-verify`, {
+                order_id: response.data.order_id,
+                razorpay_payment_id: rzpResponse.razorpay_payment_id,
+                razorpay_signature: rzpResponse.razorpay_signature,
+              }, { withCredentials: true });
+              toast.success('Payment successful!');
+              navigate(`/payment/success?property_id=${propertyId}`);
+            } catch (err) {
+              toast.error('Payment verification failed');
+            }
+          },
+          prefill: { name: 'User', email: '' },
+          theme: { color: '#06b6d4' },
+          modal: { ondismiss: () => setProcessingPayment(false) },
+        };
+        if (window.Razorpay) {
+          const rzp = new window.Razorpay(options);
+          rzp.open();
+        } else {
+          toast.error('Razorpay SDK not loaded');
+          setProcessingPayment(false);
+        }
+      } else {
+        // Stripe redirect
+        window.location.href = response.data.checkout_url;
+      }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to initiate payment');
       setProcessingPayment(false);
@@ -158,6 +196,34 @@ const Pricing = () => {
             <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
           </div>
         ) : (
+          <>
+            {/* Payment Method Selector */}
+            <div className="flex items-center justify-center gap-4 mb-8" data-testid="payment-method-selector">
+              <span className="text-sm text-slate-400">Pay with:</span>
+              <button
+                data-testid="select-stripe"
+                onClick={() => setPaymentMethod('stripe')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
+                  paymentMethod === 'stripe'
+                    ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400'
+                    : 'border-slate-700 text-slate-400 hover:border-slate-600'
+                }`}
+              >
+                <CreditCard className="h-4 w-4" />Stripe (International)
+              </button>
+              <button
+                data-testid="select-razorpay"
+                onClick={() => setPaymentMethod('razorpay')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
+                  paymentMethod === 'razorpay'
+                    ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
+                    : 'border-slate-700 text-slate-400 hover:border-slate-600'
+                }`}
+              >
+                <Zap className="h-4 w-4" />Razorpay (India)
+              </button>
+            </div>
+
           <div className="grid md:grid-cols-3 gap-8">
             {packages.map((plan) => (
               <div 
@@ -212,6 +278,7 @@ const Pricing = () => {
               </div>
             ))}
           </div>
+          </>
         )}
 
         {/* Features Comparison */}
