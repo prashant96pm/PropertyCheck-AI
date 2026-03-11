@@ -7,7 +7,7 @@ import requests
 import os
 import json
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://prop-intel-5.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://risk-analysis-hub-5.preview.emergentagent.com')
 
 class TestHealthAndBasicAPIs:
     """Basic API health checks"""

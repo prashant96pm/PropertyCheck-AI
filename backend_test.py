@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 class PropertyCheckAPITester:
-    def __init__(self, base_url="https://prop-intel-5.preview.emergentagent.com"):
+    def __init__(self, base_url="https://risk-analysis-hub-5.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_base = f"{base_url}/api"
         self.session = requests.Session()

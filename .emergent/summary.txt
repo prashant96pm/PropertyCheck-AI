@@ -1,0 +1,167 @@
+<analysis>**original_problem_statement:**
+The user wants to build a production-grade SaaS web application called **PropertyCheck AI**, an AI-powered property intelligence and verification platform for India.
+
+**PRODUCT REQUIREMENTS:**
+The platform aims to be an all-in-one solution for real estate due diligence, combining features from Landeed (land record discovery), Zillow (property intelligence), and Palantir (data integration). The vision is to create a fully automated engine for verifying property ownership, title history, legal risks, and market insights within minutes.
+
+**Core Features:**
+1.  **Intelligent Government Data Retrieval:** Use automated agents to scrape and collect data from various public land record systems.
+2.  **Unified Property Data Graph:** Create a knowledge graph (e.g., using Neo4j) to connect properties, owners, transactions, and documents.
+3.  **AI Document Processing:** An AI pipeline for OCR, classification, and entity extraction from property documents (Sale Deeds, EC, RTC, etc.).
+4.  **Title Chain Reconstruction:** Automatically reconstruct and visualize historical ownership timelines to detect gaps or suspicious transfers.
+5.  **AI Risk Score Engine:** The core feature, providing a 0-100 risk score based on ownership, document, and legal analysis. This logic is considered stable and should not be modified.
+6.  **AI Legal Copilot:** A Gemini-powered assistant to analyze documents, highlight risks, and generate due diligence summaries for lawyers and home buyers.
+7.  **Property Intelligence & Valuation:** Provide Zillow-style market data, including estimated value, price trends, and neighborhood insights.
+8.  **Report Generation:** Create downloadable, shareable PDF reports summarizing all findings.
+9.  **SaaS Dashboard & Enterprise APIs:** A modern UI for different user roles (Home Buyers, Lawyers, Banks) and a set of APIs for enterprise clients.
+
+**Tech Stack:**
+*   **Frontend:** Next.js (React + TypeScript), TailwindCSS + ShadCN UI, Mapbox/Leaflet.
+*   **Backend:** Python, FastAPI, Modular/Microservices architecture.
+*   **Databases:** PostgreSQL, Neo4j, Elasticsearch.
+*   **AI/ML:** Google Gemini, custom models.
+*   **Infrastructure:** Docker, Kubernetes, RabbitMQ/Redis, AWS/GCP.
+
+**User's preferred language**: English
+
+**what currently exists?**
+A full-stack application with a FastAPI backend and a React (JavaScript) frontend. The backend was a large monolith () but is currently undergoing a major refactor into a modular structure with APIRouters. The frontend provides a comprehensive SaaS dashboard for the primary user persona (Home Buyer), including property search, a 360-degree property profile view, document upload, and stubs for advanced features like title chain visualization and valuation. Most external services (AI, government data, payments) are mocked. The application has been made production-ready by resolving deployment blockers related to database connections and missing dependencies.
+
+**Last working item**:
+*   **Last item agent was working:** The agent was in the middle of a major backend refactoring (P1 task). The goal is to break down the monolithic  file (nearly 2000 lines) into a modular architecture using FastAPI's . The agent has already created the new directory structure (, , ) and was in the process of creating the individual router files (, , , etc.) by extracting the corresponding logic and endpoints from the original .
+*   **Status**: IN PROGRESS
+*   **Agent Testing Done**: N
+*   **Which testing method agent to use?**: backend testing agent
+*   **User Testing Done**: N
+
+**All Pending/In progress Issue list**:
+No outstanding bugs. The only pending item is the refactoring task.
+
+**In progress Task List**:
+*   **Task 1**: Complete the P1 Backend Refactor (P0)
+    *   **Where to resume**: The agent has created the new directories and most of the new, empty router files (). The next step is to systematically move the endpoint logic, Pydantic models, and helper functions from  into their respective new modules (, , ). Finally, update the main  to be a lightweight entry point that imports and includes all the new routers.
+    *   **What will be achieved with this?**: The backend codebase will become modular, maintainable, and scalable, making it easier to add complex new features (like P2 and P3 tasks) without modifying a single large file.
+    *   **Status**: IN PROGRESS
+    *   **Should Test frontend/backend/both after fix?**: backend
+    *   **Blocked on something**: No.
+
+**Upcoming and Future Tasks**
+*   **Upcoming Tasks (P2):**
+    *   **Property Knowledge Graph:** Implement an interactive D3.js/React-based graph visualization for property relationships.
+    *   **Map Integration:** Integrate Leaflet.js to display property locations and boundaries.
+    *   **Enterprise API Layer:** Build out the documented REST APIs with API key authentication for enterprise clients.
+    *   **Admin Panel:** Create a dashboard for admin users (accessible from the main app) to monitor verifications and manage users.
+
+*   **Future Tasks (P3):**
+    *   **D3.js Title Chain Visualization:** Enhance the title chain feature with an interactive timeline and ownership graph.
+    *   **Background Jobs:** Simulate async processing for long-running tasks like document processing.
+    *   **Mobile Responsiveness:** Ensure all pages and features are fully functional and look good on mobile devices.
+    *   **Live Government API Integration:** Replace mocked government data endpoints with live integrations.
+
+**Completed work in this session**
+- **P0 - Universal Search & Navigation:**
+  - Implemented the Universal Property Search feature with both keyword and advanced search functionality.
+  - Created the  and  components.
+  - Fixed all application navigation links, ensuring a seamless user flow from landing to property details.
+- **Production Deployment Readiness:**
+  - Fixed multiple deployment blockers, including missing  dependency in .
+  - Hardened the backend for production by improving MongoDB Atlas connection logic (adding timeouts, TLS handling), adding a startup health check, and making the Tesseract OCR import defensive to prevent crashes.
+- **UI/UX & Feature Enhancements (based on user feedback):**
+  - Replaced Shield icons with more appropriate Building icons.
+  - Toned down or removed excessive animations (blinking, pulsing).
+  - Renamed AI Search to Universal Search for clarity.
+  - Made the risk score deterministic based on property ID for consistency.
+  - Fixed the Pricing page and added a Purchase Plan button to property detail pages.
+  - Added Profile, Settings, and placeholder legal pages (T&C, Privacy Policy).
+  - Corrected Bangalore to Bengaluru across the app and in mock data.
+- **P0 - AI Intelligence Platform MVP (based on new vision):**
+  - Added new mocked backend endpoints for Title Chain, Valuation, Legal Copilot, etc.
+  - Enhanced the  and  pages to display this new intelligence data in separate tabs.
+  - Created a shareable, public report page ().
+- **Testing:**
+  - Successfully ran comprehensive tests using the testing agent multiple times, achieving 100% pass rates after fixes.
+
+**Earlier issues found/mentioned but not fixed**
+None.
+
+**Known issue recurrence from previous fork**
+None.
+
+**Code Architecture**
+
+
+**Key Technical Concepts**
+*   **Frontend**: React, TailwindCSS, ShadCN UI,  for icons.
+*   **Backend**: FastAPI, Python. Currently undergoing refactor from monolith to modular  architecture.
+*   **Database**: MongoDB (current implementation).
+*   **Authentication**: JWT (custom), Google OAuth (via Emergent).
+*   **AI/ML**: Mocked Gemini for analysis, defensive Tesseract for OCR.
+
+**key DB schema**
+The application uses MongoDB with the following conceptual collections: , , , . The schema is implicit and not formally enforced.
+
+**changes in tech stack**
+- **Map Integration**: User chose **Leaflet.js** (free, open-source) over Mapbox.
+- **Backend Architecture**: Actively moving from a monolithic  to a modular structure.
+
+**All files of reference**
+*   : The monolithic source file for the ongoing refactoring.
+*   : The new directory containing the modular router files.
+*   : The new file for shared Pydantic data models.
+*   : The new file for authentication helpers.
+*   : The main page for viewing all property intelligence.
+*   : The search result detail view.
+*   : The Product Requirements Document.
+
+**Areas that need refactoring**:
+The backend refactoring is the highest priority task and is currently in progress.
+
+**key api endpoints**
+The API endpoints are being reorganized under new routers:
+*    (in )
+*   ,  (in )
+*    (in )
+*    (in )
+*    (in )
+
+**Critical Info for New Agent**
+*   **Complete the Backend Refactor First**: The most critical and immediate task is to complete the P1 backend refactoring. Do not start new features until the  monolith is fully broken down into the new modular structure and the application is confirmed to be working without regressions.
+*   **Follow the Approved Plan**: The user has approved a clear multi-phase plan (P1 Refactor -> P2 New Features -> P3 Advanced Features). Stick to this order.
+*   **User Personas**: The primary target user is the **Home Buyer**. All new features should be built with their needs in mind first.
+*   **Mocked Services**: Remember that most advanced features (AI analysis, government data retrieval, payments, knowledge graph) are still mocked in the backend.
+*   **Leaflet.js for Maps**: The user explicitly chose the free Leaflet.js library for map integration. Do not use Mapbox.
+
+**documents and test reports created in this job**
+*    (updated with the latest platform vision)
+*    to 
+
+**Last 10 User Messages and any pending HUMAN messages**
+*   **User (Msg 359):** Approved the agent's detailed plan to refactor the backend first (P1), then build new features like the knowledge graph and map integration (P2), followed by advanced features (P3). Confirmed the use of Leaflet.js for maps and specified that the admin panel should be accessible to admin-role users from the existing dashboard. **Status: Acknowledged, P1 In Progress.**
+*   **User (Msg 356):** Instructed the agent to implement the remaining action items from the plan: Backend refactor, Knowledge Graph, Live APIs, Map integration, Enterprise APIs, Admin Panel, D3.js viz, Celery jobs, and mobile app. **Status: In Progress.**
+*   **User (Msg 287):** Confirmed development priorities: P0 (core MVP) before P1 (AI Copilot). Stated that the AI Legal Copilot should use Gemini for text generation. Prioritized user roles: 1) Home Buyers, 2) Lawyers, 3) Banks. **Status: Done.**
+*   **User (Msg 284):** Provided a massive product vision update, redefining PropertyCheckAI as a comprehensive intelligence platform combining features of Landeed, Zillow, and Palantir. This is the new source of truth for all future development. **Status: Acknowledged, P0 features implemented.**
+*   **User (Msg 240, 226):** Requested deployment and provided deployment error logs. **Status: Done, all deployment issues fixed.**
+*   **User (Msg 97, 58):** Provided detailed UI/UX feedback via uploaded documents, requesting icon changes, animation adjustments, branding consistency, and bug fixes. **Status: Done.**
+
+**Project Health Check:**
+*   **Broken**: Nothing is broken, but the backend is in a transitional state due to the ongoing refactor.
+*   **Mocked**: AI Legal Copilot, Property Valuation, Title Chain history, Government Record APIs, Payment Gateways (Stripe/Razorpay), Knowledge Graph.
+
+**3rd Party Integrations**
+*   **Google Gemini 3 Pro**: Uses Emergent LLM Key (mocked).
+*   **Stripe**: Integration is stubbed out.
+*   **Razorpay**: Integration is stubbed out.
+*   **Google Auth**: Integrated via Emergent-managed auth.
+*   **Leaflet.js**: Planned for map integration (no key required).
+
+**Testing status**
+*   **Testing agent used after significant changes**: YES (four times, most recently after implementing the P0 intelligence features).
+*   **Troubleshoot agent used after agent stuck in loop**: NO
+*   **Test files created**: None.
+*   **Known regressions**: None.
+
+**Credentials to test flow:**
+Use the register functionality to create a new user for testing flows.
+
+**What agent forgot to execute**
+The agent did not forget anything, but the session ended midway through the high-priority backend refactoring task. The next agent must pick this up immediately.</analysis>
