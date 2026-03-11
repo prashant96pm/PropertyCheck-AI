@@ -20,6 +20,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import DPDPCompliance from './pages/DPDPCompliance';
 import SharedReport from './pages/SharedReport';
+import AdminPanel from './pages/AdminPanel';
+import ApiDocs from './pages/ApiDocs';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -49,6 +51,7 @@ function AppRouter() {
       <Route path="/terms-of-service" element={<TermsOfService />} />
       <Route path="/dpdp-compliance" element={<DPDPCompliance />} />
       <Route path="/shared-report/:shareToken" element={<SharedReport />} />
+      <Route path="/developer" element={<ApiDocs />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       
       {/* Protected routes */}
@@ -85,6 +88,11 @@ function AppRouter() {
       <Route path="/payment/success" element={
         <ProtectedRoute>
           <PaymentSuccess />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin" element={
+        <ProtectedRoute>
+          <AdminPanel />
         </ProtectedRoute>
       } />
       

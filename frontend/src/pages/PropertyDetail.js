@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import RiskMeter from '../components/RiskMeter';
+import KnowledgeGraph from '../components/KnowledgeGraph';
+import PropertyMap from '../components/PropertyMap';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -215,6 +217,8 @@ const PropertyIntelligence = () => {
               { v: 'valuation', l: 'Valuation', i: IndianRupee },
               { v: 'documents', l: 'Documents', i: FileText },
               { v: 'government', l: 'Govt Sources', i: Globe },
+              { v: 'graph', l: 'Knowledge Graph', i: Globe },
+              { v: 'map', l: 'Map', i: MapPin },
             ].map(t => (
               <TabsTrigger key={t.v} value={t.v} className="flex-1 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 text-xs sm:text-sm" data-testid={`tab-${t.v}`}>
                 <t.i className="h-3.5 w-3.5 mr-1.5 hidden sm:inline" />{t.l}
@@ -644,6 +648,33 @@ const PropertyIntelligence = () => {
             ) : (
               <div className="glass-card text-center py-12"><Loader2 className="h-8 w-8 animate-spin text-cyan-400 mx-auto" /></div>
             )}
+          </TabsContent>
+
+          {/* KNOWLEDGE GRAPH TAB */}
+          <TabsContent value="graph">
+            <div className="glass-card">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Globe className="h-5 w-5 text-cyan-400" />Property Knowledge Graph
+              </h3>
+              <p className="text-xs text-slate-500 mb-4">Interactive visualization of property relationships — owners, documents, locations, and government records</p>
+              <KnowledgeGraph
+                propertyId={propertyId}
+                titleChain={titleChain}
+                property={property}
+                documents={documents}
+              />
+            </div>
+          </TabsContent>
+
+          {/* MAP TAB */}
+          <TabsContent value="map">
+            <div className="glass-card">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-cyan-400" />Property Location
+              </h3>
+              <p className="text-xs text-slate-500 mb-4">Property location with nearby infrastructure markers</p>
+              <PropertyMap property={property} valuation={valuation} />
+            </div>
           </TabsContent>
         </Tabs>
       </main>

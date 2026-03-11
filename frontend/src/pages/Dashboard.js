@@ -28,7 +28,9 @@ import {
   AlertTriangle,
   XCircle,
   Search,
-  Sparkles
+  Sparkles,
+  Shield,
+  Code
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -145,6 +147,16 @@ const Dashboard = () => {
                   <DropdownMenuItem data-testid="settings-menu-item" className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" onClick={() => navigate('/settings')}>
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
+                  </DropdownMenuItem>
+                  {user?.role === 'admin' && (
+                    <DropdownMenuItem data-testid="admin-menu-item" className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" onClick={() => navigate('/admin')}>
+                      <Shield className="mr-2 h-4 w-4" />
+                      Admin Panel
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem data-testid="api-docs-menu-item" className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" onClick={() => navigate('/developer')}>
+                    <Code className="mr-2 h-4 w-4" />
+                    API Docs
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-slate-700" />
                   <DropdownMenuItem data-testid="logout-menu-item" onClick={handleLogout} className="text-slate-300 hover:text-white hover:bg-slate-800">
