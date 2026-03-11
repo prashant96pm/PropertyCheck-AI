@@ -10,6 +10,7 @@ Build a production-grade SaaS application called **PropertyCheck AI** — an AI-
 - **AI/ML**: Gemini via Emergent LLM Key, Tesseract OCR
 - **Auth**: JWT + Google OAuth (Emergent-managed)
 - **Payments**: Stripe (stubbed)
+- **Visualization**: D3.js (Knowledge Graph), Leaflet.js (Maps)
 
 ## What's Been Implemented
 
@@ -24,27 +25,20 @@ Build a production-grade SaaS application called **PropertyCheck AI** — an AI-
 - [x] Property 360 Profile page, Sample Registry (5 demo properties)
 
 ### P0 Intelligence Features (COMPLETE - Mar 2026)
-- [x] **Title Chain Reconstruction**: 5-transfer ownership chain, gap analysis, anomaly detection, 42yr span, completeness score
-- [x] **AI Legal Copilot**: Gemini-powered lawyer-style due diligence reports (10-section structured analysis)
-- [x] **Property Valuation & Market Intelligence**: Estimated value, guideline value, price trends, neighborhood scores, infrastructure distances, nearby transactions
-- [x] **Government Data Retrieval Agents**: 7 multi-source agents (state portals, CERSAI, eCourts, municipal, survey dept) with status tracking
-- [x] **Enhanced Report Generator**: Shareable report links with public access
-- [x] **Enhanced PropertyDetail**: 7 intelligence tabs (Overview, Title Chain, Risk, Legal Copilot, Valuation, Documents, Govt Sources)
-
-### Navigation & UI (COMPLETE)
-- [x] All routes working, Building2 icon, Footer legal links
-- [x] Profile page, Settings page, Privacy/Terms/DPDP pages
-- [x] Bengaluru (not Bangalore), risk labels (No Risk/High Risk)
-- [x] Shared report page for public access
+- [x] Title Chain Reconstruction, AI Legal Copilot, Property Valuation
+- [x] Government Data Retrieval Agents, Enhanced Report Generator
+- [x] Enhanced PropertyDetail: 9 intelligence tabs
 
 ### P1 - Backend Refactor (COMPLETE - Mar 2026)
-- [x] **Modular Architecture**: Broke down 2000-line monolithic server.py into 8 route modules
-- [x] **Route Modules**: auth.py, properties.py, search.py, intelligence.py, reports.py, payments.py, admin.py, enterprise.py
-- [x] **Shared Config**: config.py (DB, JWT, API keys, directories)
-- [x] **Auth Utilities**: utils/auth.py (hash_password, verify_password, create_jwt_token, get_current_user)
-- [x] **Pydantic Models**: models/schemas.py (UserCreate, UserLogin, TokenResponse, PropertyCreate, etc.)
-- [x] **Thin Entry Point**: app.py imports and mounts all routers with /api prefix
-- [x] **Zero Regressions**: All 36 API endpoints tested and passing (iteration_6.json)
+- [x] Modular Architecture: 8 route modules
+- [x] Shared Config, Auth Utilities, Pydantic Models
+- [x] Zero Regressions: 36/36 API tests passed
+
+### P2 - Strategic Features (COMPLETE - Mar 2026)
+- [x] **Property Knowledge Graph**: D3.js force-directed interactive graph showing property-owner-document-location-government relationships. Draggable nodes, zoom, click-to-inspect details panel. Color-coded by entity type.
+- [x] **Map Integration (Leaflet.js)**: Property location map with CartoDB dark tiles, property marker with popup, boundary circle, infrastructure markers (hospitals, schools, metro). District-based coordinates.
+- [x] **Enterprise API Documentation & Key Management**: Full API reference at /developer with 4 endpoint categories, interactive API key generation, copy-to-clipboard cURL examples, authentication docs, rate limit tiers.
+- [x] **Admin Panel**: Role-gated admin dashboard at /admin with Overview (system stats), Users (management + role changes), Verifications (risk report monitoring). Accessible from dashboard dropdown for admin users only.
 
 ## Architecture
 
@@ -63,6 +57,17 @@ Build a production-grade SaaS application called **PropertyCheck AI** — an AI-
     payments.py       # Pricing, Stripe checkout
     admin.py          # Admin panel (role-gated)
     enterprise.py     # Enterprise API (API key auth)
+
+/app/frontend/src/
+  components/
+    KnowledgeGraph.js  # D3.js force-directed graph
+    PropertyMap.js     # Leaflet.js map component
+    RiskMeter.js, ShimmerLoader.js, FloatingActionButton.js
+  pages/
+    AdminPanel.js      # Admin dashboard (overview/users/verifications)
+    ApiDocs.js         # Enterprise API docs & key management
+    PropertyDetail.js  # 9-tab intelligence view (+ graph + map)
+    Dashboard.js, Landing.js, SearchPage.js, etc.
 ```
 
 ## Routes
@@ -73,31 +78,15 @@ Build a production-grade SaaS application called **PropertyCheck AI** — an AI-
 | /search | Universal Search | No |
 | /property-profile/:id | Property 360 | No |
 | /pricing | Pricing | No |
-| /privacy-policy, /terms-of-service, /dpdp-compliance | Legal | No |
+| /developer | Enterprise API Docs | No |
 | /shared-report/:token | Shared Report | No |
 | /dashboard | Dashboard | Yes |
 | /upload | Upload Property | Yes |
-| /property/:id, /report/:id | Property Intelligence | Yes |
+| /property/:id | Property Intelligence (9 tabs) | Yes |
 | /profile, /settings | User Settings | Yes |
-
-## Key API Endpoints
-- Auth: register, login, session, me, logout, google
-- Properties: CRUD + documents upload
-- Intelligence: title-chain, valuation, government-sources, legal-copilot
-- Analysis: risk analysis, reports, PDF download
-- Search: multi-param search, AI smart search, full-profile
-- Social: shared reports (create + public access)
-- Profile: get + update
-- Admin: stats, users, role management, verifications
-- Enterprise: API key management, verify, title-history, risk-score
+| /admin | Admin Panel | Yes (Admin role) |
 
 ## Prioritized Backlog
-
-### P2 - Strategic (Next)
-- [ ] Property Knowledge Graph (D3.js/React visualization)
-- [ ] Map integration (Leaflet.js - user's choice)
-- [ ] Enterprise API Layer (documented REST APIs with API key auth)
-- [ ] Admin Panel (accessible from dashboard for admin-role users)
 
 ### P3 - Future
 - [ ] D3.js Title Chain Visualization enhancements
@@ -112,5 +101,6 @@ Build a production-grade SaaS application called **PropertyCheck AI** — an AI-
 - iteration_1-2.json: MVP
 - iteration_3.json: Navigation & Search (100%)
 - iteration_4.json: UI/UX Fixes (94-95%)
-- iteration_5.json: Property Intelligence P0 (100% backend + frontend)
-- iteration_6.json: Backend Refactor P1 (100% - 36/36 tests passed)
+- iteration_5.json: Property Intelligence P0 (100%)
+- iteration_6.json: Backend Refactor P1 (100% - 36/36)
+- iteration_7.json: P2 Features (Backend 91% + Frontend 100%)
