@@ -19,6 +19,7 @@ import PropertyMap from '../components/PropertyMap';
 import TitleChainVisualization from '../components/TitleChainVisualization';
 import BackgroundJobs from '../components/BackgroundJobs';
 import LandRegistries from '../components/LandRegistries';
+import GovDataBridge from '../components/GovDataBridge';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -655,6 +656,15 @@ const PropertyIntelligence = () => {
                   <AlertTriangle className="h-3 w-3" />
                   {govtSources.disclaimer}
                 </p>
+
+                {/* GovDataBridge - Fetch Live Records */}
+                <div className="glass-card">
+                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <Globe className="h-5 w-5 text-cyan-400" />Fetch Live Records (GovDataBridge)
+                  </h3>
+                  <p className="text-xs text-slate-500 mb-4">Fetch real-time records from 20 state government portals</p>
+                  <GovDataBridge propertyId={propertyId} property={property} />
+                </div>
               </div>
             ) : (
               <div className="glass-card text-center py-12"><Loader2 className="h-8 w-8 animate-spin text-cyan-400 mx-auto" /></div>
