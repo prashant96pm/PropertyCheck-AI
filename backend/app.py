@@ -28,6 +28,8 @@ from routes.admin import router as admin_router
 from routes.enterprise import router as enterprise_router
 from routes.jobs import router as jobs_router
 from modules.gov_data_bridge.routes.gov_routes import router as gov_router
+from routes.fraud import router as fraud_router
+from routes.alerts import router as alerts_router
 
 app.include_router(auth_router, prefix="/api")
 app.include_router(properties_router, prefix="/api")
@@ -39,6 +41,8 @@ app.include_router(admin_router, prefix="/api")
 app.include_router(enterprise_router, prefix="/api")
 app.include_router(jobs_router, prefix="/api")
 app.include_router(gov_router, prefix="/api")
+app.include_router(fraud_router, prefix="/api")
+app.include_router(alerts_router, prefix="/api")
 
 # Health & root
 from datetime import datetime, timezone

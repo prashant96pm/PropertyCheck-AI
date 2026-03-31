@@ -1,0 +1,81 @@
+{
+  "summary": "PropertyCheck AI New Features Testing Complete. Backend: 20/20 tests passed (100%). Frontend: All Settings page features verified. AI Fraud Detection (Gemini LLM), Record Alert Subscriptions, Gov States API, Theme Toggle, and Multi-language i18n all working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_fraud_alerts_features.py",
+    "/app/test_reports/pytest/pytest_fraud_alerts_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "All new features properly implemented with correct data-testid attributes",
+    "Fraud detection uses Gemini LLM with rule-based fallback - working correctly",
+    "Alert subscription CRUD operations all functional",
+    "Theme toggle properly adds/removes 'light' class on document.documentElement",
+    "Language change correctly persists to localStorage with key 'pcai_language'",
+    "All 23 languages properly configured in i18n"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_fraud_alerts_features.py"
+  ],
+  "success_rate": {
+    "backend": "100% (20/20 passed)",
+    "frontend": "100% (all Settings features verified)"
+  },
+  "test_credentials": {
+    "test_user": {
+      "email": "fraud_test@test.com",
+      "password": "test1234",
+      "name": "FraudTest"
+    }
+  },
+  "seed_data_creation": "Created test property for fraud analysis testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "New features fully tested. Test user fraud_test@test.com available. Fraud detection endpoint uses Gemini LLM (EMERGENT_LLM_KEY configured) with rule-based fallback. Alert subscriptions stored in record_alerts collection. Gov scrapers in MOCK mode (GOV_MOCK_MODE=true). Settings page has theme toggle (dark/light/system) and 23 language options.",
+  "endpoints_tested": {
+    "routes/fraud.py": {
+      "POST /api/fraud/analyze/{property_id}": "PASS - Returns fraud_score (0-100), risk_level, findings[], recommended_actions[], analysis_method",
+      "GET /api/fraud/report/{property_id}": "PASS - Returns latest fraud report or message if none exists",
+      "Auth required": "PASS - Both endpoints return 401 without auth",
+      "Property not found": "PASS - Returns 404 for non-existent property"
+    },
+    "routes/alerts.py": {
+      "POST /api/alerts/subscribe": "PASS - Creates subscription with subscription_id, requires state field",
+      "GET /api/alerts/subscriptions": "PASS - Lists user's subscriptions with total count",
+      "PUT /api/alerts/subscription/{sub_id}": "PASS - Updates subscription (frequency, active, documentTypes)",
+      "DELETE /api/alerts/subscription/{sub_id}": "PASS - Deletes subscription, returns 404 if not found",
+      "POST /api/alerts/check-now/{sub_id}": "PASS - Triggers manual check, returns status='checking'",
+      "GET /api/alerts/notifications": "PASS - Returns user's notifications list"
+    },
+    "routes/gov_routes.py": {
+      "GET /api/gov/states": "PASS - Returns 20 Indian states with portal info and document types",
+      "POST /api/gov/fetch": "PASS - Creates job in mock mode, returns job_id with PENDING status"
+    }
+  },
+  "frontend_tested": {
+    "Settings Page": {
+      "appearance_section": "PASS - data-testid='settings-appearance' present",
+      "theme_dark_btn": "PASS - data-testid='theme-dark-btn' clickable, applies dark theme",
+      "theme_light_btn": "PASS - data-testid='theme-light-btn' clickable, adds 'light' class to root",
+      "theme_system_btn": "PASS - data-testid='theme-system-btn' present",
+      "language_section": "PASS - data-testid='settings-language' present",
+      "priority_languages": "PASS - 6 priority languages (en, hi, kn, ta, te, mr) visible initially",
+      "show_all_langs_btn": "PASS - data-testid='show-all-langs-btn' expands to show all 23 languages",
+      "language_persistence": "PASS - Language change saves to localStorage key 'pcai_language'",
+      "notifications_section": "PASS - data-testid='settings-notifications' with toggle button"
+    }
+  },
+  "mocked_apis_confirmed": {
+    "gov_scrapers": "All 20 state government portal scrapers return mock data (GOV_MOCK_MODE=true)",
+    "2captcha": "Falls back to mock (no API key configured)",
+    "s3_storage": "Falls back to local storage at /app/backend/uploads/gov_records/"
+  }
+}

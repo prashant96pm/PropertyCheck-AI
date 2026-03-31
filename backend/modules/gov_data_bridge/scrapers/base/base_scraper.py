@@ -1,4 +1,4 @@
-"""Base Scraper - Abstract base class for all state scrapers"""
+"""Base Scraper - Abstract base class for all state scrapers with live+mock dual mode"""
 import os
 import asyncio
 import hashlib
@@ -28,7 +28,6 @@ class BaseScraper(ABC):
         self._client = None
 
     async def init(self):
-        """Initialize HTTP client"""
         if not self._client:
             self._client = httpx.AsyncClient(
                 timeout=30.0,
@@ -42,7 +41,6 @@ class BaseScraper(ABC):
             self._client = None
 
     async def respect_rate_limit(self):
-        """Rate limit requests per portal"""
         now = asyncio.get_event_loop().time()
         min_interval = 1.0 / RATE_LIMIT
         elapsed = now - self._last_request_time
@@ -52,32 +50,39 @@ class BaseScraper(ABC):
 
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=2, min=2, max=60))
     async def with_retry(self, fn, *args, **kwargs):
-        """Execute with retry and exponential backoff"""
         return await fn(*args, **kwargs)
 
     async def navigate_to(self, url: str) -> httpx.Response:
-        """Navigate to URL with rate limiting"""
         await self.respect_rate_limit()
         await self.init()
         return await self._client.get(url)
 
     async def post_form(self, url: str, data: dict) -> httpx.Response:
-        """POST form data"""
         await self.respect_rate_limit()
         await self.init()
         return await self._client.post(url, data=data)
 
     async def solve_captcha(self, image_bytes: bytes) -> str:
-        """Solve CAPTCHA using the captcha solver"""
         from modules.gov_data_bridge.captcha.captcha_solver import CaptchaSolver
         solver = CaptchaSolver()
         return await solver.solve(image_bytes)
 
     async def fetch(self, inputs: dict, document_type: str) -> dict:
-        """Main fetch method - routes to mock or live mode"""
+        """Main fetch method - routes to mock or live with auto-fallback"""
         if GOV_MOCK_MODE:
             return await self.fetch_mock(inputs, document_type)
-        return await self.fetch_live(inputs, document_type)
+
+        # Live mode: try live, fallback to mock on failure
+        try:
+            result = await self.fetch_live(inputs, document_type)
+            result["data_source"] = "live"
+            return result
+        except Exception as e:
+            logger.warning(f"[{self.name}] Live fetch failed, falling back to mock: {e}")
+            result = await self.fetch_mock(inputs, document_type)
+            result["data_source"] = "mock"
+            result["live_failed_reason"] = str(e)[:200]
+            return result
 
     async def fetch_live(self, inputs: dict, document_type: str) -> dict:
         """Live scraping - override per state for real implementation"""
@@ -91,21 +96,17 @@ class BaseScraper(ABC):
 
     @abstractmethod
     async def extract_data(self, inputs: dict, document_type: str) -> dict:
-        """State-specific data extraction - MUST override"""
         pass
 
     @abstractmethod
     async def fetch_mock(self, inputs: dict, document_type: str) -> dict:
-        """Return realistic mock data - MUST override"""
         pass
 
     def generate_deterministic_seed(self, inputs: dict) -> int:
-        """Generate a deterministic seed from inputs for consistent mock data"""
         key = "".join(str(v) for v in inputs.values())
         return int(hashlib.md5(key.encode()).hexdigest()[:8], 16)
 
     def build_result(self, document_type: str, structured_data: dict, pdf_available: bool = True) -> dict:
-        """Standard result format"""
         return {
             "state": self.config.get("state_key", ""),
             "portal_name": self.name,
@@ -119,7 +120,6 @@ class BaseScraper(ABC):
         }
 
     async def check_portal_health(self) -> dict:
-        """Check if the portal is reachable"""
         try:
             await self.init()
             resp = await self._client.get(self.url, timeout=10.0)

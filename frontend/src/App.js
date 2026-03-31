@@ -1,7 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { Toaster } from './components/ui/sonner';
+import './i18n';
 
 // Pages
 import Landing from './pages/Landing';
@@ -105,19 +107,22 @@ function AppRouter() {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppRouter />
-        <Toaster 
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: 'hsl(222, 47%, 11%)',
-              color: 'hsl(210, 40%, 98%)',
-              border: '1px solid hsl(217, 33%, 20%)',
-            },
-          }}
-        />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppRouter />
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              className: 'pcai-toast',
+              style: {
+                background: 'hsl(var(--card))',
+                color: 'hsl(var(--card-foreground))',
+                border: '1px solid hsl(var(--border))',
+              },
+            }}
+          />
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

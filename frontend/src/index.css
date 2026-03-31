@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* Dark Glassmorphism Theme */
+    /* Dark Glassmorphism Theme (default) */
     --background: 222 47% 6%;
     --foreground: 210 40% 98%;
     --card: 222 47% 11%;
@@ -28,7 +28,7 @@
     --ring: 199 89% 48%;
     --radius: 0.5rem;
     
-    /* Risk Colors - Neon Glows */
+    /* Risk Colors */
     --risk-high: 0 100% 60%;
     --risk-medium: 38 100% 55%;
     --risk-low: 142 100% 50%;
@@ -45,6 +45,44 @@
     --chart-4: 0 100% 60%;
     --chart-5: 262 83% 58%;
   }
+
+  /* Light Mode */
+  .light {
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 199 89% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 20% 94%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 14% 40%;
+    --accent: 199 89% 42%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 20% 88%;
+    --input: 214 20% 88%;
+    --ring: 199 89% 42%;
+
+    --risk-high: 0 84% 50%;
+    --risk-medium: 38 92% 50%;
+    --risk-low: 142 76% 36%;
+
+    --glow-green: 0 2px 12px rgba(16, 185, 129, 0.2);
+    --glow-orange: 0 2px 12px rgba(245, 158, 11, 0.2);
+    --glow-red: 0 2px 12px rgba(239, 68, 68, 0.2);
+    --glow-blue: 0 2px 12px rgba(14, 165, 233, 0.2);
+
+    --chart-1: 199 89% 42%;
+    --chart-2: 142 76% 36%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 0 84% 50%;
+    --chart-5: 262 83% 50%;
+  }
 }
 
 @layer base {
@@ -57,6 +95,57 @@
     font-family: 'Inter', sans-serif;
     background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 50%, #0f1419 100%);
     min-height: 100vh;
+  }
+
+  .light body, body.light {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+  }
+
+  .light .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(12px);
+  }
+
+  .light .glass-header {
+    background: rgba(255, 255, 255, 0.85);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .light .glass-card-green {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    box-shadow: 0 2px 12px rgba(16, 185, 129, 0.1);
+  }
+
+  .light .glass-card-orange {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    box-shadow: 0 2px 12px rgba(245, 158, 11, 0.1);
+  }
+
+  .light .glass-card-red {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    box-shadow: 0 2px 12px rgba(239, 68, 68, 0.1);
+  }
+
+  .light .glass-card-blue {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(14, 165, 233, 0.3);
+    box-shadow: 0 2px 12px rgba(14, 165, 233, 0.1);
+  }
+
+  .light .btn-secondary {
+    background: rgba(241, 245, 249, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1e293b;
+  }
+
+  .light .btn-secondary:hover {
+    background: rgba(226, 232, 240, 0.9);
+    border-color: rgba(14, 165, 233, 0.4);
   }
   
   h1, h2, h3, h4, h5, h6 {
