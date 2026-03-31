@@ -1,113 +1,105 @@
 # PropertyCheck AI - Product Requirements Document
 
 ## Original Problem Statement
-Build a production-grade SaaS application called **PropertyCheck AI** — an AI-Powered Property Intelligence & Verification Platform for India. Combines Landeed, Zillow, Palantir, and AI Legal Copilot.
+Build a production-grade SaaS web application called **PropertyCheck AI**, an AI-powered property intelligence and verification platform for India. The platform combines features from Landeed (land record discovery), Zillow (property intelligence), and Palantir (data integration).
 
 ## Tech Stack
-- **Frontend**: React + TailwindCSS + ShadCN UI (Glassmorphism dark theme)
-- **Backend**: FastAPI (Python) - Modular APIRouter (10 route modules)
-- **Database**: MongoDB (Atlas-ready)
-- **AI/ML**: Gemini via Emergent LLM Key, Tesseract OCR
-- **Auth**: JWT + Google OAuth (Emergent-managed)
-- **Payments**: Stripe + Razorpay (dual gateway)
-- **Visualization**: D3.js (Knowledge Graph + Title Chain), Leaflet.js (Maps)
-- **GovDataBridge**: httpx + BeautifulSoup4 + pytesseract + boto3 (20 state scrapers)
+- **Frontend**: React, TailwindCSS, ShadCN UI, D3.js, Leaflet.js, react-i18next
+- **Backend**: FastAPI, Python, motor (async MongoDB), emergentintegrations (Gemini LLM)
+- **Database**: MongoDB
+- **Auth**: JWT + Emergent Google OAuth
+- **Integrations**: Gemini LLM (Emergent key), Stripe, Razorpay, Playwright (scrapers)
+
+## What's Been Implemented (Complete)
+
+### P0 - Core MVP
+- Universal Property Search (keyword + advanced)
+- Property 360 Dashboard & Detail pages
+- Document upload & management
+- Risk Score Engine (deterministic, 0-100)
+- AI Legal Copilot (Gemini mock/live)
+- Property Valuation estimates
+- Shareable public report pages
+- User auth (JWT + Google OAuth)
+- Profile, Settings, Legal pages
+
+### P1 - Backend Refactor (DONE)
+- Monolithic server.py → modular APIRouter architecture
+- Routes: auth, properties, search, intelligence, reports, payments, admin, enterprise, jobs, fraud, alerts
+- Models, utils, config separated
+
+### P1 - Advanced Features (DONE)
+- Knowledge Graph (D3.js interactive visualization)
+- Map Integration (Leaflet.js)
+- Enterprise API Layer + API Docs page
+- Admin Panel (admin-role users)
+- Title Chain Visualization (D3.js timeline)
+- Razorpay & Stripe payment integration
+- Background Jobs (async processing)
+
+### P1 - GovDataBridge Module (DONE)
+- Full module: `/app/backend/modules/gov_data_bridge/`
+- Mock scrapers for ALL 20 Indian states
+- Live scrapers for 20 states (httpx + bs4 with auto mock fallback)
+- 3-tier CAPTCHA solving: 2Captcha API → OCR (pytesseract) → Mock
+- S3 storage with auto local fallback (boto3 → local file)
+- Job processor (async background tasks)
+- Frontend GovDataBridge component
+
+### P1 - AI Fraud Detection Engine (DONE - March 2026)
+- POST /api/fraud/analyze/{property_id} - Gemini LLM analysis
+- Rule-based fallback if LLM unavailable
+- Returns: fraud_score (0-100), risk_level, findings[], recommended_actions[]
+- Results stored in MongoDB fraud_reports collection
+- GET /api/fraud/report/{property_id} for retrieval
+
+### P1 - Record Alert Subscriptions (DONE - March 2026)
+- POST /api/alerts/subscribe - Create alert subscription
+- GET /api/alerts/subscriptions - List user subscriptions
+- PUT/DELETE /api/alerts/subscription/{sub_id} - Manage subscriptions
+- POST /api/alerts/check-now/{sub_id} - Manual check trigger
+- GET /api/alerts/notifications - Get notifications
+- Background task simulates record detection
+
+### P1 - Light/Dark Mode (DONE - March 2026)
+- CSS variables for both themes in index.css
+- ThemeContext with localStorage persistence
+- Dark (default), Light, System mode options
+- Glass-card light mode overrides
+
+### P1 - Multi-language i18n (DONE - March 2026)
+- 23 languages: English + 22 Scheduled Indian languages
+- Priority 1: Hindi, Kannada, Tamil, Telugu, Marathi (full translations)
+- Priority 2: Bengali, Gujarati, Malayalam, Odia, Punjabi, Assamese, Urdu
+- Priority 3: Sindhi, Nepali, Sanskrit, Konkani, Maithili, Dogri, Manipuri, Santali, Bodo, Kashmiri
+- Language persisted to localStorage
+- Settings page with expandable language picker
+
+## Current Mocked Services
+- Government portal scrapers (GOV_MOCK_MODE=true, live attempted first with fallback)
+- 2Captcha (no API key → falls back to OCR/mock)
+- S3 (no AWS keys → falls back to local storage)
+- AI Legal Copilot & Fraud Detection use real Gemini LLM when key available
 
 ## Architecture
 ```
-/app/backend/
-  app.py                    # Entry point (10 routers)
-  config.py                 # Shared config
-  models/schemas.py         # Pydantic models
-  utils/auth.py             # Auth helpers
-  routes/                   # 9 route modules
-    auth.py, properties.py, search.py, intelligence.py,
-    reports.py, payments.py, admin.py, enterprise.py, jobs.py
-  modules/
-    gov_data_bridge/        # GovDataBridge Module
-      config/portals_config.py     # 20 state portal configs
-      scrapers/                     # 20 state scrapers
-        base/base_scraper.py       # Abstract base class
-        karnataka/bhoomi_scraper.py
-        telangana/dharani_scraper.py
-        tamilnadu/tnregnet_scraper.py
-        maharashtra/mahabhumi_scraper.py
-        ... (16 more state scrapers)
-      captcha/captcha_solver.py    # OCR + mock CAPTCHA solver
-      queue/job_processor.py       # Async job processing
-      storage/document_storage.py  # S3 + local PDF storage
-      parsers/parsers.py           # HTML/PDF parsing + normalizer
-      models/gov_record.py         # MongoDB models
-      routes/gov_routes.py         # REST API endpoints
-      utils/helpers.py             # Rate limiter, portal health
-
-/app/frontend/src/
-  components/
-    GovDataBridge.js           # Live record fetching UI
-    KnowledgeGraph.js, PropertyMap.js, TitleChainVisualization.js,
-    BackgroundJobs.js, LandRegistries.js, MobileNav.js
-  pages/
-    AdminPanel.js, ApiDocs.js, PropertyDetail.js (11+ tabs),
-    Dashboard.js, Landing.js, Pricing.js, etc.
+/app
+├── backend/
+│   ├── app.py (main entry)
+│   ├── config.py
+│   ├── modules/gov_data_bridge/ (scrapers, captcha, storage)
+│   ├── routes/ (auth, properties, search, intelligence, reports, payments, admin, enterprise, jobs, fraud, alerts)
+│   ├── models/
+│   └── utils/
+├── frontend/
+│   ├── src/
+│   │   ├── i18n/ (23 language files)
+│   │   ├── contexts/ (Auth, Theme)
+│   │   ├── components/
+│   │   └── pages/
 ```
 
-## Completed Features
-
-### Core MVP + P0 Intelligence (COMPLETE)
-- [x] Auth, Property CRUD, Document Upload+OCR, AI Risk Analysis, PDF Reports
-- [x] Title Chain, AI Legal Copilot, Valuation, Govt Data Agents, Universal Search
-
-### P1 Backend Refactor (COMPLETE)
-- [x] 9 modular route modules, shared config, auth utils, Pydantic models
-
-### P2 Strategic Features (COMPLETE)
-- [x] Knowledge Graph (D3.js), Map (Leaflet.js), Enterprise API Docs, Admin Panel
-
-### P3 Advanced Features (COMPLETE)
-- [x] D3.js Title Chain Viz, Background Jobs, Mobile Responsiveness
-- [x] 17 State Land Record Databases, Stripe+Razorpay dual payments
-
-### GovDataBridge Module (COMPLETE - Mar 2026)
-- [x] **20 State Scrapers**: Karnataka (Bhoomi), Telangana (Dharani), Tamil Nadu (TNREGINET), Maharashtra (MahaBhumi), AP (Meebhoomi), UP (Bhulekh), Rajasthan (Apna Khata), MP (Bhu-Abhilekh), Gujarat (AnyROR), Haryana (Jamabandi), Punjab (PLRS), WB (Banglarbhumi), Kerala (E-Revenue), Odisha (Bhunaksha), Bihar (Bhu-Lekh), Jharkhand (JharBhoomi), Chhattisgarh (Bhuiyan), HP (HimBhoomi), Uttarakhand (DevBhoomi), Goa
-- [x] **Base Scraper**: Abstract class with httpx, retry (tenacity), rate limiting, mock/live dual mode
-- [x] **CAPTCHA Solver**: pytesseract OCR + Pillow preprocessing + mock bypass (GOV_MOCK_MODE)
-- [x] **Job Processor**: 9-step async processing with progress tracking via MongoDB
-- [x] **S3 Storage**: boto3 with pre-signed URLs + local file fallback
-- [x] **24hr Caching**: Cache hit returns instant CACHED response
-- [x] **REST API**: /gov/fetch, /gov/fetch-bulk, /gov/job/:id, /gov/states, /gov/portals/status, /gov/records/:propertyId, /gov/jobs/history, /gov/download
-- [x] **Frontend**: GovDataBridge component with state selector, doc type selector, real-time job progress, structured data display, PDF download, portal directory grid
-- [x] **Parsers**: HTML table parser, PDF parser (pdfplumber), data normalizer
-
-## GovDataBridge API Endpoints
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | /api/gov/states | No | List 20 states with docs/inputs |
-| GET | /api/gov/portals/status | No | Portal health status |
-| POST | /api/gov/fetch | JWT | Submit single fetch job |
-| POST | /api/gov/fetch-bulk | JWT | Submit up to 10 jobs |
-| GET | /api/gov/job/{job_id} | JWT | Poll job status/progress |
-| GET | /api/gov/records/{prop_id} | JWT | Property's fetched records |
-| GET | /api/gov/jobs/history | JWT | User's job history |
-| GET | /api/gov/document/{rec_id} | No | Get record by ID |
-| GET | /api/gov/download/{s}/{d}/{j} | No | Download PDF |
-
-## Prioritized Backlog
-- [ ] Live scraper implementation (replace mock with real Playwright/httpx)
-- [ ] 2captcha integration for production CAPTCHA solving
-- [ ] Real S3 bucket configuration
-- [ ] AI Fraud Detection Engine
-- [ ] Light mode theme
-- [ ] Multi-language support
-
-## Test Reports
-- iteration_6.json: P1 Backend Refactor (36/36)
-- iteration_7.json: P2 Features (100%)
-- iteration_8.json: P3 Features (100%)
-- iteration_9.json: GovDataBridge Module (Backend 17/17 + Frontend 100%)
-
-## Mocked Services
-- 20 state government portal scrapers (GOV_MOCK_MODE=true)
-- S3 storage (local fallback)
-- CAPTCHA solver (mock bypass)
-- Stripe/Razorpay (test keys)
-- AI Legal Copilot (Gemini mock fallback)
+## Remaining Future Tasks
+- Mobile responsiveness improvements (P3)
+- Live Government API integration (when portals support it) (P3)
+- Real-time WebSocket notifications for alerts (P3)
