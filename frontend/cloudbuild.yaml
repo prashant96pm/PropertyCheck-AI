@@ -1,0 +1,10 @@
+# Builds the frontend image with the backend URL baked in (CRA reads env at build time).
+# Usage: gcloud builds submit frontend --config frontend/cloudbuild.yaml \
+#          --substitutions=_IMAGE=...,_BACKEND_URL=https://...
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "--build-arg", "REACT_APP_BACKEND_URL=${_BACKEND_URL}", "-t", "${_IMAGE}", "."]
+images: ["${_IMAGE}"]
+options:
+  machineType: E2_HIGHCPU_8
+timeout: 1800s

@@ -3,13 +3,10 @@ from fastapi import APIRouter, HTTPException, Depends, Request
 from datetime import datetime, timezone
 import uuid
 import razorpay
-from config import db, STRIPE_API_KEY, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, logger
+import stripe
+from starlette.concurrency import run_in_threadpool
+from config import db, STRIPE_API_KEY, STRIPE_WEBHOOK_SECRET, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, logger
 from utils.auth import get_current_user
-
-try:
-    from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionRequest
-except ImportError:
-    StripeCheckout = None
 
 router = APIRouter()
 
@@ -43,27 +40,32 @@ async def create_checkout(request: Request, user: dict = Depends(get_current_use
         return await _create_razorpay_order(user, property_id, package_type, package, amount, origin_url)
 
     # Stripe checkout
-    if STRIPE_API_KEY and StripeCheckout:
+    if STRIPE_API_KEY:
         try:
-            host_url = str(request.base_url).rstrip("/")
-            webhook_url = f"{host_url}/api/webhook/stripe"
-            checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
-
             success_url = f"{origin_url}/payment/success?session_id={{CHECKOUT_SESSION_ID}}&property_id={property_id}"
             cancel_url = f"{origin_url}/pricing?property_id={property_id}"
 
-            req = CheckoutSessionRequest(
-                amount=float(amount),
-                currency=package["currency"].lower(),
+            session = await run_in_threadpool(
+                stripe.checkout.Session.create,
+                api_key=STRIPE_API_KEY,
+                mode="payment",
+                payment_method_types=["card"],
+                line_items=[{
+                    "price_data": {
+                        "currency": package["currency"].lower(),
+                        "product_data": {"name": package["name"]},
+                        "unit_amount": int(round(float(amount) * 100)),
+                    },
+                    "quantity": 1,
+                }],
                 success_url=success_url,
                 cancel_url=cancel_url,
-                metadata={"property_id": property_id, "user_id": user["user_id"], "package_type": package_type}
+                metadata={"property_id": property_id or "", "user_id": user["user_id"], "package_type": package_type},
             )
-            session = await checkout.create_checkout_session(req)
 
             await db.payment_transactions.insert_one({
                 "transaction_id": f"txn_{uuid.uuid4().hex[:12]}",
-                "session_id": session.session_id,
+                "session_id": session.id,
                 "user_id": user["user_id"],
                 "property_id": property_id,
                 "package_type": package_type,
@@ -73,7 +75,7 @@ async def create_checkout(request: Request, user: dict = Depends(get_current_use
                 "payment_status": "initiated",
                 "created_at": datetime.now(timezone.utc).isoformat(),
             })
-            return {"checkout_url": session.url, "session_id": session.session_id, "payment_method": "stripe"}
+            return {"checkout_url": session.url, "session_id": session.id, "payment_method": "stripe"}
         except Exception as e:
             logger.error(f"Stripe error: {e}")
             raise HTTPException(status_code=500, detail="Payment processing error")
@@ -171,10 +173,9 @@ async def check_payment_status(session_id: str, request: Request, user: dict = D
     if txn.get("payment_status") == "paid":
         return {"status": "complete", "payment_status": "paid", "amount_total": txn.get("amount", 0)}
 
-    if STRIPE_API_KEY and StripeCheckout:
+    if STRIPE_API_KEY:
         try:
-            checkout = StripeCheckout(api_key=STRIPE_API_KEY)
-            status = await checkout.get_checkout_status(session_id)
+            status = await run_in_threadpool(stripe.checkout.Session.retrieve, session_id, api_key=STRIPE_API_KEY)
             new_status = status.payment_status
             await db.payment_transactions.update_one(
                 {"session_id": session_id},
@@ -192,14 +193,16 @@ async def stripe_webhook(request: Request):
     """Handle Stripe webhooks"""
     body = await request.body()
     signature = request.headers.get("Stripe-Signature", "")
-    if STRIPE_API_KEY and StripeCheckout:
+    if STRIPE_API_KEY and STRIPE_WEBHOOK_SECRET:
         try:
-            checkout = StripeCheckout(api_key=STRIPE_API_KEY)
-            webhook_response = await checkout.handle_webhook(body, signature)
+            event = stripe.Webhook.construct_event(body, signature, STRIPE_WEBHOOK_SECRET)
+            if not event["type"].startswith("checkout.session."):
+                return {"status": "ignored"}
+            session = event["data"]["object"]
             await db.payment_transactions.update_one(
-                {"session_id": webhook_response.session_id},
+                {"session_id": session["id"]},
                 {"$set": {
-                    "payment_status": webhook_response.payment_status,
+                    "payment_status": session["payment_status"],
                     "updated_at": datetime.now(timezone.utc).isoformat(),
                 }}
             )

@@ -4,13 +4,10 @@ from fastapi.responses import FileResponse
 from datetime import datetime, timezone
 import uuid
 from pathlib import Path
-from config import db, REPORTS_DIR, EMERGENT_LLM_KEY, logger
+from config import db, REPORTS_DIR, logger
 from utils.auth import get_current_user
 
-try:
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
-except ImportError:
-    LlmChat = None
+from utils.llm import LLM_ENABLED, generate_text
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -55,13 +52,11 @@ async def analyze_property(property_id: str, user: dict = Depends(get_current_us
     documents = await db.documents.find({"property_id": property_id}, {"_id": 0}).to_list(50)
 
     analysis = None
-    if EMERGENT_LLM_KEY and LlmChat:
+    if LLM_ENABLED:
         try:
-            chat = LlmChat(api_key=EMERGENT_LLM_KEY, model="gemini-2.0-flash")
             prompt = f"""Analyze this Indian property for risk:\nSurvey: {prop.get('survey_no')}, District: {prop.get('district')}, State: {prop.get('state')}\nOwner: {prop.get('owner_name')}, Documents: {len(documents)}\n\nReturn JSON: {{"risk_score": 0-100, "risk_status": "GREEN/YELLOW/RED", "summary": "...", "executive_summary": "...", "risk_factors": [{{"factor": "...", "severity": "LOW/MEDIUM/HIGH", "detail": "..."}}], "recommendations": ["..."]}}"""
-            response = await chat.send_message(user_message=UserMessage(content=prompt))
             import json
-            resp_text = response.content if hasattr(response, 'content') else str(response)
+            resp_text = await generate_text(prompt)
             if "```json" in resp_text: resp_text = resp_text.split("```json")[1].split("```")[0]
             elif "```" in resp_text: resp_text = resp_text.split("```")[1].split("```")[0]
             analysis = json.loads(resp_text.strip())
@@ -72,7 +67,7 @@ async def analyze_property(property_id: str, user: dict = Depends(get_current_us
         analysis = generate_mock_risk_analysis(prop, documents)
 
     report_id = f"rpt_{uuid.uuid4().hex[:12]}"
-    report_doc = {"report_id": report_id, "property_id": property_id, "user_id": user["user_id"], **analysis, "generated_at": datetime.now(timezone.utc).isoformat(), "ai_powered": EMERGENT_LLM_KEY is not None}
+    report_doc = {"report_id": report_id, "property_id": property_id, "user_id": user["user_id"], **analysis, "generated_at": datetime.now(timezone.utc).isoformat(), "ai_powered": LLM_ENABLED}
     await db.risk_reports.insert_one(report_doc)
     await db.properties.update_one({"property_id": property_id}, {"$set": {"risk_score": analysis["risk_score"], "risk_status": analysis["risk_status"]}})
     return {k: v for k, v in report_doc.items() if k != "_id"}

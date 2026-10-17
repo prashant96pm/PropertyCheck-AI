@@ -1,7 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends, Request, Response
-from datetime import datetime, timezone
+from fastapi.responses import RedirectResponse
+from datetime import datetime, timezone, timedelta
+from urllib.parse import urlencode
+import os
+import secrets
 import uuid
-from config import db, JWT_EXPIRATION_HOURS, logger
+import httpx
+from config import db, JWT_EXPIRATION_HOURS, logger, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, BACKEND_PUBLIC_URL, FRONTEND_URL
 from utils.auth import hash_password, verify_password, create_jwt_token, get_current_user
 from models.schemas import UserCreate, UserLogin, UserResponse, TokenResponse
 
@@ -44,18 +49,104 @@ async def logout(response: Response):
     response.delete_cookie(key="session_token", path="/")
     return {"message": "Logged out successfully"}
 
+GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo"
+OAUTH_STATE_TTL = timedelta(minutes=10)
+OAUTH_SESSION_TTL = timedelta(minutes=5)
+
+
+def _google_redirect_uri(request: Request) -> str:
+    base = BACKEND_PUBLIC_URL or str(request.base_url).rstrip("/")
+    return f"{base}/api/auth/google/callback"
+
+
+def _allowed_frontend_origins() -> set:
+    origins = {o.strip().rstrip("/") for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip() and o.strip() != "*"}
+    if FRONTEND_URL:
+        origins.add(FRONTEND_URL)
+    return origins
+
+
+@router.get("/auth/google/login")
+async def google_login(request: Request, redirect: str = ""):
+    """Start the Google OAuth flow. `redirect` is the frontend origin to return to."""
+    if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
+        raise HTTPException(status_code=503, detail="Google sign-in is not configured")
+    frontend = redirect.rstrip("/")
+    if frontend not in _allowed_frontend_origins():
+        frontend = FRONTEND_URL
+    if not frontend:
+        raise HTTPException(status_code=400, detail="Invalid redirect")
+    state = secrets.token_urlsafe(32)
+    await db.oauth_states.insert_one({"state": state, "frontend": frontend, "created_at": datetime.now(timezone.utc)})
+    params = {
+        "client_id": GOOGLE_CLIENT_ID,
+        "redirect_uri": _google_redirect_uri(request),
+        "response_type": "code",
+        "scope": "openid email profile",
+        "state": state,
+        "prompt": "select_account",
+    }
+    return RedirectResponse(f"{GOOGLE_AUTH_URL}?{urlencode(params)}")
+
+
+@router.get("/auth/google/callback")
+async def google_callback(request: Request, code: str = "", state: str = "", error: str = ""):
+    """Google redirects here. Exchange the code, then hand the frontend a one-time session_id."""
+    state_doc = await db.oauth_states.find_one_and_delete({"state": state}) if state else None
+    if not state_doc:
+        raise HTTPException(status_code=400, detail="Invalid OAuth state")
+    frontend = state_doc["frontend"]
+    created = state_doc["created_at"]
+    if created.tzinfo is None:
+        created = created.replace(tzinfo=timezone.utc)
+    if error or not code or datetime.now(timezone.utc) - created > OAUTH_STATE_TTL:
+        return RedirectResponse(f"{frontend}/login")
+    try:
+        async with httpx.AsyncClient(timeout=15) as client_http:
+            token_resp = await client_http.post(GOOGLE_TOKEN_URL, data={
+                "code": code,
+                "client_id": GOOGLE_CLIENT_ID,
+                "client_secret": GOOGLE_CLIENT_SECRET,
+                "redirect_uri": _google_redirect_uri(request),
+                "grant_type": "authorization_code",
+            })
+            token_resp.raise_for_status()
+            access_token = token_resp.json()["access_token"]
+            info_resp = await client_http.get(GOOGLE_USERINFO_URL, headers={"Authorization": f"Bearer {access_token}"})
+            info_resp.raise_for_status()
+            info = info_resp.json()
+    except Exception as e:
+        logger.error(f"Google OAuth exchange failed: {e}")
+        return RedirectResponse(f"{frontend}/login")
+    if not info.get("email") or not info.get("email_verified", False):
+        return RedirectResponse(f"{frontend}/login")
+    session_id = secrets.token_urlsafe(32)
+    await db.oauth_sessions.insert_one({
+        "session_id": session_id,
+        "email": info["email"],
+        "name": info.get("name") or info["email"].split("@")[0],
+        "picture": info.get("picture"),
+        "created_at": datetime.now(timezone.utc),
+    })
+    return RedirectResponse(f"{frontend}/auth/callback#session_id={session_id}")
+
+
 @router.post("/auth/session")
 async def process_oauth_session(request: Request, response: Response):
-    import httpx
     body = await request.json()
     session_id = body.get("session_id")
     if not session_id:
         raise HTTPException(status_code=400, detail="Session ID required")
-    async with httpx.AsyncClient() as client_http:
-        resp = await client_http.get("https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data", headers={"X-Session-ID": session_id})
-    if resp.status_code != 200:
+    oauth_data = await db.oauth_sessions.find_one_and_delete({"session_id": session_id}, {"_id": 0})
+    if not oauth_data:
         raise HTTPException(status_code=401, detail="Invalid session")
-    oauth_data = resp.json()
+    created = oauth_data["created_at"]
+    if created.tzinfo is None:
+        created = created.replace(tzinfo=timezone.utc)
+    if datetime.now(timezone.utc) - created > OAUTH_SESSION_TTL:
+        raise HTTPException(status_code=401, detail="Session expired")
     existing_user = await db.users.find_one({"email": oauth_data["email"]}, {"_id": 0})
     if existing_user:
         user_id = existing_user["user_id"]

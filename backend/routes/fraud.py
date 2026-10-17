@@ -4,15 +4,12 @@ import json
 import logging
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, Request
-from config import db, EMERGENT_LLM_KEY, logger
+from config import db, logger
 from utils.auth import get_current_user
 
 router = APIRouter(prefix="/fraud")
 
-try:
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
-except ImportError:
-    LlmChat = None
+from utils.llm import LLM_ENABLED, generate_text
 
 
 def rule_based_fraud_score(title_chain: list, valuation: dict, documents: list, prop: dict) -> dict:
@@ -108,17 +105,10 @@ def rule_based_fraud_score(title_chain: list, valuation: dict, documents: list, 
 
 async def llm_fraud_analysis(prop: dict, title_chain: list, valuation: dict, documents: list) -> dict:
     """Use Gemini LLM for advanced fraud detection"""
-    if not EMERGENT_LLM_KEY or not LlmChat:
+    if not LLM_ENABLED:
         return None
 
     try:
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"fraud_{prop.get('property_id', 'unknown')}_{uuid.uuid4().hex[:8]}",
-            system_message="You are an expert Indian property fraud analyst. Analyze property data and output ONLY valid JSON."
-        )
-        chat.with_model("gemini", "gemini-2.5-flash")
-
         prompt = f"""Analyze this Indian property for fraud indicators. Return ONLY a JSON object (no markdown, no explanation).
 
 PROPERTY: {json.dumps({k: v for k, v in prop.items() if k != '_id'}, default=str)[:1000]}
@@ -129,8 +119,10 @@ DOCUMENTS_COUNT: {len(documents)}
 Return JSON:
 {{"fraud_score": 0-100 (100=clean), "risk_level": "LOW|MEDIUM|HIGH|CRITICAL", "findings": [{{"category": "str", "severity": "LOW|MEDIUM|HIGH|CRITICAL", "detail": "str"}}], "recommended_actions": ["str"]}}"""
 
-        response = await chat.send_message(user_message=UserMessage(text=prompt))
-        content = response if isinstance(response, str) else (response.content if hasattr(response, 'content') else str(response))
+        content = await generate_text(
+            prompt,
+            system_message="You are an expert Indian property fraud analyst. Analyze property data and output ONLY valid JSON.",
+        )
 
         # Extract JSON from response
         text = content.strip()

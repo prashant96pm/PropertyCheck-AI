@@ -7,13 +7,10 @@ import json
 import re
 from rapidfuzz import fuzz
 
-from config import db, EMERGENT_LLM_KEY, logger
+from config import db, logger
 from utils.auth import get_optional_user
 
-try:
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
-except ImportError:
-    LlmChat = None
+from utils.llm import LLM_ENABLED, generate_text
 
 router = APIRouter()
 
@@ -101,12 +98,10 @@ async def ai_smart_search(request: Request):
     body = await request.json()
     query_text = body.get("query", "")
     parsed_params = parse_query_fallback(query_text)
-    if EMERGENT_LLM_KEY and LlmChat:
+    if LLM_ENABLED:
         try:
-            chat = LlmChat(api_key=EMERGENT_LLM_KEY, model="gemini-2.0-flash")
             prompt = f"""Parse this property search query and return ONLY JSON:\nQuery: "{query_text}"\nReturn: {{"owner_name": null, "survey_no": null, "district": null, "state": null, "village": null, "taluk": null, "land_type": null}}"""
-            response = await chat.send_message(user_message=UserMessage(content=prompt))
-            resp_text = response.content if hasattr(response, 'content') else str(response)
+            resp_text = await generate_text(prompt)
             if "```json" in resp_text: resp_text = resp_text.split("```json")[1].split("```")[0]
             elif "```" in resp_text: resp_text = resp_text.split("```")[1].split("```")[0]
             parsed_params = json.loads(resp_text.strip())

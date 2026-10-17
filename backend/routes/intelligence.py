@@ -2,13 +2,10 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
 from datetime import datetime, timezone
 import uuid
-from config import db, EMERGENT_LLM_KEY, logger
+from config import db, logger
 from utils.auth import get_current_user
 
-try:
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
-except ImportError:
-    LlmChat = None
+from utils.llm import LLM_ENABLED, generate_text
 
 router = APIRouter()
 
@@ -68,12 +65,10 @@ async def legal_copilot_analysis(property_id: str, request: Request, user: dict 
     prop_summary = f"Property: Survey No {prop.get('survey_no','N/A')}, {prop.get('district','')}, {prop.get('state','')}\nOwner: {prop.get('owner_name','Unknown')}\nExtent: {prop.get('extent','N/A')}\nDocuments: {len(documents)}\nRisk Score: {risk_report.get('risk_score','N/A') if risk_report else 'Not assessed'}"
 
     legal_analysis = None
-    if EMERGENT_LLM_KEY and LlmChat:
+    if LLM_ENABLED:
         try:
-            chat = LlmChat(api_key=EMERGENT_LLM_KEY, model="gemini-2.0-flash")
             prompt = f"""You are a senior property lawyer in India. Analyze this property for a home buyer.\n\n{prop_summary}\n\nGenerate a legal due diligence report with: 1. EXECUTIVE SUMMARY 2. TITLE VERIFICATION STATUS 3. OWNERSHIP ANALYSIS 4. ENCUMBRANCE STATUS 5. LITIGATION CHECK 6. DOCUMENT COMPLETENESS 7. RISK FACTORS 8. RECOMMENDATIONS 9. MISSING DOCUMENTS 10. LEGAL OPINION (PROCEED/CAUTION/DO NOT PROCEED).\nUse professional legal language. Reference Indian property law."""
-            response = await chat.send_message(user_message=UserMessage(content=prompt))
-            legal_analysis = response.content if hasattr(response, 'content') else str(response)
+            legal_analysis = await generate_text(prompt)
         except Exception as e:
             logger.warning(f"LLM legal copilot failed: {e}")
 
@@ -83,8 +78,8 @@ async def legal_copilot_analysis(property_id: str, request: Request, user: dict 
         legal_analysis = f"""LEGAL DUE DILIGENCE REPORT\nProperty: Survey No {prop.get('survey_no','N/A')}, {prop.get('district','')}, {prop.get('state','')}\nDate: {datetime.now(timezone.utc).strftime('%d %B %Y')}\n\n1. EXECUTIVE SUMMARY\nProperty reviewed for title clarity and legal compliance. Overall risk: {risk_level}.\n\n2. TITLE VERIFICATION: {'CLEAR' if risk_level == 'LOW' else 'REQUIRES VERIFICATION'}\n\n3. OWNERSHIP ANALYSIS\nOwner: {prop.get('owner_name','Unknown')}. {'Properly documented.' if risk_level == 'LOW' else 'Additional verification recommended.'}\n\n4. ENCUMBRANCE STATUS\n{'No encumbrances found.' if risk_level == 'LOW' else 'EC verification pending.'}\n\n5. LITIGATION CHECK\n{'No pending litigation.' if risk_level == 'LOW' else 'Court records check recommended.'}\n\n6. DOCUMENT COMPLETENESS: {len(documents)} documents uploaded.\n\n7. RISK FACTORS\n- Title Chain: {risk_level}\n- Encumbrance: LOW\n- Litigation: LOW\n\n8. RECOMMENDATIONS\na) Obtain fresh EC (30 years)\nb) Verify mutation records\nc) Physical site inspection\nd) Check property tax dues\n\n9. MISSING DOCUMENTS\n{missing_docs if len(documents) < 5 else 'All critical documents available.'}\n\n10. LEGAL OPINION: {'PROCEED' if risk_level == 'LOW' else 'PROCEED WITH CAUTION'}\n\nDisclaimer: AI-generated report. Consult a qualified lawyer."""
 
     copilot_id = f"lc_{uuid.uuid4().hex[:12]}"
-    await db.legal_copilot_reports.insert_one({"copilot_id": copilot_id, "property_id": property_id, "user_id": user["user_id"], "analysis": legal_analysis, "generated_at": datetime.now(timezone.utc).isoformat(), "ai_powered": EMERGENT_LLM_KEY is not None})
-    return {"copilot_id": copilot_id, "property_id": property_id, "analysis": legal_analysis, "ai_powered": EMERGENT_LLM_KEY is not None, "generated_at": datetime.now(timezone.utc).isoformat()}
+    await db.legal_copilot_reports.insert_one({"copilot_id": copilot_id, "property_id": property_id, "user_id": user["user_id"], "analysis": legal_analysis, "generated_at": datetime.now(timezone.utc).isoformat(), "ai_powered": LLM_ENABLED})
+    return {"copilot_id": copilot_id, "property_id": property_id, "analysis": legal_analysis, "ai_powered": LLM_ENABLED, "generated_at": datetime.now(timezone.utc).isoformat()}
 
 
 @router.get("/property/{property_id}/legal-copilot")

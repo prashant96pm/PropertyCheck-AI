@@ -5,10 +5,10 @@ Build a production-grade SaaS web application called **PropertyCheck AI**, an AI
 
 ## Tech Stack
 - **Frontend**: React, TailwindCSS, ShadCN UI, D3.js, Leaflet.js, react-i18next
-- **Backend**: FastAPI, Python, motor (async MongoDB), emergentintegrations (Gemini LLM)
+- **Backend**: FastAPI, Python, motor (async MongoDB), google-genai (Gemini LLM)
 - **Database**: MongoDB
-- **Auth**: JWT + Emergent Google OAuth
-- **Integrations**: Gemini LLM (Emergent key), Stripe, Razorpay, Playwright (scrapers)
+- **Auth**: JWT + Google OAuth (direct)
+- **Integrations**: Gemini LLM (GEMINI_API_KEY), Stripe, Razorpay, Playwright (scrapers)
 
 ## What's Been Implemented (Complete)
 
